@@ -528,7 +528,7 @@ textarea:focus {
 /* Footer */
 .app-footer {
   max-width: 1120px;
-  margin: 0 auto;
+  margin: 0;
   padding: 0 1.4rem 1.2rem;
   font-size: 0.7rem;
   color: var(--text-muted);
