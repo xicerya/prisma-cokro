@@ -1,5 +1,5 @@
 // riskEngine.js
-// Menggabungkan aturan ke dalam satu fungsi analisis risiko
+// Mesin analisis risiko yang memakai rules.js
 
 const RiskEngine = (() => {
   function categorizeRisk(score) {
@@ -9,17 +9,23 @@ const RiskEngine = (() => {
   }
 
   function analyze(params) {
-    let likelihood, impact, autoInfo = null;
+    // Selalu pakai rule engine
+    const autoInfoRaw = RiskRules.inferBaseLikelihoodImpact(params) || {};
 
-    if (params.modeLI === "manual" && params.likelihood && params.impact) {
-      likelihood = parseInt(params.likelihood, 10);
-      impact = parseInt(params.impact, 10);
-    } else {
-      autoInfo = RiskRules.inferBaseLikelihoodImpact(params);
-      likelihood = autoInfo.likelihood;
-      impact = autoInfo.impact;
-    }
+    const autoInfo = {
+      likelihood:
+        typeof autoInfoRaw.likelihood === "number" ? autoInfoRaw.likelihood : 3,
+      impact:
+        typeof autoInfoRaw.impact === "number" ? autoInfoRaw.impact : 3,
+      reasons: Array.isArray(autoInfoRaw.reasons)
+        ? autoInfoRaw.reasons
+        : ["Menggunakan nilai default."],
+    };
 
+    let likelihood = autoInfo.likelihood;
+    let impact = autoInfo.impact;
+
+    // clamp 1–5
     likelihood = Math.max(1, Math.min(5, likelihood));
     impact = Math.max(1, Math.min(5, impact));
 

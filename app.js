@@ -12,10 +12,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   buildEmptyMatrix();
 
+  if (!form) {
+    console.error("Form dengan id 'risk-form' tidak ditemukan.");
+    return;
+  }
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const params = collectParams();
+    console.log("Params:", params); // buat cek di console
     const result = RiskEngine.analyze(params);
+    console.log("Result:", result);
     renderSummary(params, result);
     renderMatrix(result);
     renderPDP(result.pdpResults);
@@ -41,44 +48,49 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 0);
   });
 
-  function collectParams() {
-    const scenarioName = document.getElementById("scenarioName").value.trim();
-    const dataType = document.getElementById("dataType").value;
-    const processingActivity = document.getElementById("processingActivity").value;
-    const encryption = document.getElementById("encryption").value;
-    const accessControl = document.getElementById("accessControl").value;
-    const consentType = document.getElementById("consentType").value;
-    const incidentResponsePlan = document.getElementById("incidentResponsePlan").value;
+function collectParams() {
+  const scenarioName = document.getElementById("scenarioName").value.trim();
+  const dataType = document.getElementById("dataType").value;
+  const processingActivity = document.getElementById("processingActivity").value;
+  const processingPurpose = document
+    .getElementById("processingPurpose")
+    .value.trim();
 
-    const thirdParty = (
-      document.querySelector('input[name="thirdParty"]:checked') || {}
-    ).value || "no";
+  const encryption = document.getElementById("encryption").value;
+  const accessControl = document.getElementById("accessControl").value;
+  const authMethod = document.getElementById("authMethod").value;
+  const consentType = document.getElementById("consentType").value;
+  const privacyPolicy = document.getElementById("privacyPolicy").value;
+  const incidentResponsePlan =
+    document.getElementById("incidentResponsePlan").value;
+  const detectSystem = document.getElementById("detectSystem").value;
+  const backupPolicy = document.getElementById("backupPolicy").value;
 
-    const purposeSpecified = (
-      document.querySelector('input[name="purposeSpecified"]:checked') || {}
-    ).value || "no";
+  const thirdParty =
+    (document.querySelector('input[name="thirdParty"]:checked') || {}).value ||
+    "no";
 
-    const modeLI =
-      (document.querySelector('input[name="modeLI"]:checked') || {}).value ||
-      "auto";
-    const likelihood = document.getElementById("likelihood").value;
-    const impact = document.getElementById("impact").value;
+  const purposeSpecified =
+    (document.querySelector('input[name="purposeSpecified"]:checked') || {})
+      .value || "no";
 
-    return {
-      scenarioName,
-      dataType,
-      processingActivity,
-      encryption,
-      accessControl,
-      thirdParty,
-      purposeSpecified,
-      consentType,
-      incidentResponsePlan,
-      modeLI,
-      likelihood,
-      impact,
-    };
-  }
+  return {
+    scenarioName,
+    dataType,
+    processingActivity,
+    processingPurpose,
+    thirdParty,
+    encryption,
+    accessControl,
+    authMethod,
+    purposeSpecified,
+    consentType,
+    privacyPolicy,
+    incidentResponsePlan,
+    detectSystem,
+    backupPolicy,
+  };
+}
 
   function renderSummary(params, result) {
     summaryContent.classList.remove("placeholder");
@@ -132,13 +144,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function buildEmptyMatrix() {
     matrixContainer.innerHTML = "";
 
-    // Baris 0: pojok kiri atas + label Likelihood
     matrixContainer.appendChild(createCell(" ", "label"));
     for (let l = 1; l <= 5; l++) {
       matrixContainer.appendChild(createCell(String(l), "label axis"));
     }
 
-    // Baris berikutnya: Impact labels + grid
     for (let i = 5; i >= 1; i--) {
       matrixContainer.appendChild(createCell(String(i), "label axis"));
       for (let l = 1; l <= 5; l++) {
@@ -164,28 +174,44 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function renderPDP(pdpResults) {
-    pdpContainer.classList.remove("placeholder");
-    if (!pdpResults || pdpResults.length === 0) {
-      pdpContainer.textContent = "Tidak ada hasil evaluasi.";
-      return;
-    }
-
-    let html = '<table><thead><tr><th>Aspek</th><th>Status</th><th>Keterangan</th></tr></thead><tbody>';
-    for (const r of pdpResults) {
-      html += `
-        <tr>
-          <td>${escapeHtml(r.aspect)}</td>
-          <td><span class="status-pill ${r.code}">${escapeHtml(
-        r.status
-      )}</span></td>
-          <td>${escapeHtml(r.note)}</td>
-        </tr>
-      `;
-    }
-    html += "</tbody></table>";
-    pdpContainer.innerHTML = html;
+function renderPDP(pdpResults) {
+  pdpContainer.classList.remove("placeholder");
+  if (!pdpResults || pdpResults.length === 0) {
+    pdpContainer.textContent = "Tidak ada hasil evaluasi.";
+    return;
   }
+
+  let html = `
+    <table>
+      <thead>
+        <tr>
+          <th>Aspek</th>
+          <th>Status</th>
+          <th>Pasal/Ayat Terkait</th>
+          <th>Keterangan</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  for (const r of pdpResults) {
+    html += `
+      <tr>
+        <td>${escapeHtml(r.aspect)}</td>
+        <td>
+          <span class="status-pill ${r.code}">
+            ${escapeHtml(r.status)}
+          </span>
+        </td>
+        <td>${escapeHtml(r.legalRef || "-")}</td>
+        <td>${escapeHtml(r.note)}</td>
+      </tr>
+    `;
+  }
+
+  html += "</tbody></table>";
+  pdpContainer.innerHTML = html;
+}
 
   function renderNIST(nistResults) {
     nistContainer.classList.remove("placeholder");
@@ -220,7 +246,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderRecommendations(recs) {
     recContainer.classList.remove("placeholder");
     if (!recs || recs.length === 0) {
-      recContainer.textContent = "Tidak ada rekomendasi khusus untuk skenario ini.";
+      recContainer.textContent =
+        "Tidak ada rekomendasi khusus untuk skenario ini.";
       return;
     }
 
