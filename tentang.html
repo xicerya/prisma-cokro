@@ -23,7 +23,7 @@
       --radius-full: 999px;
     }
 
-    * ,
+    *,
     *::before,
     *::after {
       box-sizing: border-box;
@@ -35,7 +35,8 @@
       scroll-behavior: smooth;
     }
 
-    html, body {
+    html,
+    body {
       height: 100%;
     }
 
@@ -46,6 +47,9 @@
         radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.2), transparent 55%),
         radial-gradient(circle at 90% 100%, rgba(249, 115, 22, 0.15), transparent 60%),
         radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 1), rgba(2, 6, 23, 1));
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-size: cover;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -92,6 +96,7 @@
 
     .nav-inner {
       margin: 0 auto;
+      max-width: 1120px;
       padding: 0.9rem 1.25rem;
       display: flex;
       align-items: center;
@@ -194,16 +199,6 @@
       color: var(--accent);
     }
 
-    .nav-cta {
-      display: none;
-    }
-
-    @media (min-width: 768px) {
-      .nav-cta {
-        display: inline-flex;
-      }
-    }
-
     main {
       padding: 5.5rem 1.4rem 2.5rem;
     }
@@ -276,7 +271,7 @@
       align-items: flex-start;
     }
 
-    @media (max-width: 80px) {
+    @media (max-width: 800px) {
       .about-grid-main {
         grid-template-columns: minmax(0, 1fr);
       }
@@ -290,7 +285,7 @@
       border-radius: var(--radius-full);
       border: 1px solid rgba(148, 163, 184, 0.7);
       background: radial-gradient(circle at 0 50%, rgba(56, 189, 248, 0.25), transparent 70%);
-      font-size: 0.rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.18em;
       color: var(--text-muted);
@@ -411,6 +406,7 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 1rem;
+      margin-top: 1.4rem;
     }
 
     @media (max-width: 900px) {
@@ -440,7 +436,6 @@
       font-size: 0.85rem;
     }
 
-    /* flow list (dipakai Alur Kerja Sistem) */
     .flow-list {
       list-style: none;
       position: relative;
@@ -525,14 +520,13 @@
         </div>
         <div>
           <div class="nav-title">PRISMA COKRO</div>
-          <div class="nav-subtitle">
-          </div>
+          <div class="nav-subtitle"></div>
         </div>
       </div>
 
       <nav class="nav-links" id="navLinks">
         <a href="index.html" class="nav-link">Beranda</a>
-        <a href="tentang.html" class="nav-link">Tentang</a>
+        <a href="tentang.html" class="nav-link active">Tentang</a>
       </nav>
     </div>
   </header>
@@ -544,9 +538,10 @@
         <div class="page-eyebrow">Profil</div>
         <h1 class="page-title">Tentang PRISMA COKRO</h1>
         <p class="page-desc">
-          PRISMA COKRO adalah “label eksperimen” untuk proyek yang menggabungkan
-          <strong>riset akademik</strong>, <strong>regulasi data</strong>, dan
-          <strong>prototipe teknis</strong>.
+          PRISMA COKRO adalah implementasi artefak skripsi
+          <strong>“Perancangan dan Implementasi Sistem Analisis Risiko Privasi pada Platform Digital Menggunakan Likelihood–Impact Engine Berbasis Rule-Based Automation”</strong>.
+          Aplikasi ini berbasis web statis dan menjalankan seluruh
+          <em>privacy risk engine</em> di sisi klien menggunakan JavaScript.
         </p>
       </header>
 
@@ -557,24 +552,36 @@
             <div>
               <div class="about-tag">
                 <span class="about-pill">kenapa dibuat</span>
-                <span>supaya skripsi bukan cuma dokumen</span>
+                <span>dari kerangka teori ke sistem nyata</span>
               </div>
-              <h2 class="about-title">Dari keresahan ke dashboard</h2>
+              <h2 class="about-title">Dari lonjakan data ke kebutuhan alat ukur</h2>
               <p class="about-text">
-                PRISMA COKRO lahir dari pertanyaan sederhana:
-                <strong>“Kenapa banyak pembahasan privasi data berhenti di bab teori?”</strong>
-                Banyak laporan menjelaskan risiko, tapi jarang yang menyediakan
-                <em>alat</em> untuk mengukur dan mensimulasikan risiko tersebut.
+                Penelitian ini berangkat dari fenomena
+                <strong>peningkatan pemrosesan data pribadi pada berbagai layanan digital</strong>.
+                Banyak platform mengumpulkan data sensitif (identitas hukum, biometrik, perilaku),
+                sementara mekanisme <em>penilaian risiko privasi</em> masih
+                bersifat manual, tidak konsisten, dan sulit direplikasi.
               </p>
               <p class="about-text">
-                Alih-alih hanya menulis tentang <strong>UU PDP 2022</strong> dan
-                <strong>NIST CSF 2.0</strong>, proyek ini mencoba menerjemahkannya
-                ke dalam <strong>rule-based engine</strong> dan
-                <strong>dashboard analisis risiko</strong> yang bisa dipakai ulang.
+                Di sisi lain, Indonesia sudah memiliki
+                <strong>UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi (UU PDP)</strong>,
+                dan secara global terdapat <strong>NIST Cybersecurity Framework 2.0</strong>.
+                Keduanya kuat di level prinsip dan tata kelola, tetapi
+                <strong>belum menyediakan alat kuantitatif yang dapat langsung
+                dipakai untuk menghitung risiko privasi pada skenario pemrosesan data pribadi</strong>.
+              </p>
+              <p class="about-text">
+                PRISMA COKRO menjembatani gap tersebut dengan merancang
+                <strong>framework analisis risiko privasi</strong> berbasis
+                <strong>Likelihood–Impact Matrix</strong> yang digabungkan
+                dengan <strong>rule-based engine</strong> yang merujuk pada
+                <strong>UU PDP 2022</strong> dan <strong>NIST CSF 2.0</strong>,
+                lalu diwujudkan sebagai <strong>aplikasi web statis</strong>.
               </p>
               <p class="about-quote">
-                “Kalau sebuah ide bisa diuji dengan klik tombol &mdash; bukan cuma dibaca
-                di kertas &mdash; berarti idenya siap diuji di dunia nyata.”
+                “Tujuan utamanya: skripsi tidak berhenti sebagai teks,
+                tetapi hadir sebagai alat yang bisa langsung dipakai
+                untuk membaca profil risiko privasi sebuah skenario pemrosesan data.”
               </p>
             </div>
 
@@ -582,26 +589,31 @@
               <ul class="timeline">
                 <li class="timeline-item">
                   <div class="timeline-label">fase 1</div>
-                  <div class="timeline-main">Menemukan kasus: verifikasi identitas</div>
+                  <div class="timeline-main">Identifikasi masalah & kebutuhan framework</div>
                   <div class="timeline-note">
-                    Fitur voice chat meminta KTP/SIM + selfie. Dari sini muncul pertanyaan
-                    soal risiko privasi dan kepatuhan terhadap regulasi Indonesia.
+                    Mengidentifikasi belum adanya sistem ringan yang bisa
+                    menghitung risiko privasi secara kuantitatif,
+                    memetakan ke UU PDP &amp; NIST CSF, dan memberi rekomendasi otomatis
+                    dengan cara yang konsisten dan dapat direplikasi.
                   </div>
                 </li>
                 <li class="timeline-item">
                   <div class="timeline-label">fase 2</div>
-                  <div class="timeline-main">Merangkai teori dan framework</div>
+                  <div class="timeline-main">Studi literatur & penyusunan kerangka teori</div>
                   <div class="timeline-note">
-                    Menggabungkan konsep <em>privacy harm</em>, Likelihood–Impact Matrix,
-                    UU PDP 2022, dan NIST CSF 2.0 ke dalam satu alur analisis yang konsisten.
+                    Menggabungkan teori <em>privacy harm</em>, verifikasi identitas digital,
+                    Likelihood–Impact Matrix, UU PDP 2022, dan NIST CSF 2.0 menjadi
+                    satu kerangka pikir yang runtut dari general ke specific.
                   </div>
                 </li>
                 <li class="timeline-item">
                   <div class="timeline-label">fase 3</div>
-                  <div class="timeline-main">Membangun prototipe Dashboard</div>
+                  <div class="timeline-main">Perancangan & implementasi web statis</div>
                   <div class="timeline-note">
-                    Hadirlah dashboard yang kamu lihat sekarang: mengolah parameter,
-                    menghitung skor risiko, memetakan ke regulasi, dan mengeluarkan rekomendasi.
+                    Merancang arsitektur <strong>web statis berbasis client-side JavaScript</strong>,
+                    membangun <em>privacy risk engine</em>, <em>rule-based engine</em>,
+                    UI dashboard, serta melakukan pengujian fungsional
+                    dengan berbagai skenario platform digital.
                   </div>
                 </li>
               </ul>
@@ -610,48 +622,62 @@
         </article>
       </section>
 
-      <!-- BAGIAN 2: Nilai & karakter -->
+      <!-- BAGIAN 2: Nilai & karakter sistem -->
       <section class="section">
         <article class="card">
           <div class="about-tag">
-            <span class="about-pill">cara kerja</span>
-            <span>serius di isi, santai di tampilan</span>
+            <span class="about-pill">karakter sistem</span>
+            <span>framework ilmiah, implementasi praktis</span>
           </div>
           <p class="about-text">
-            Secara konsep, PRISMA COKRO berdiri di tengah-tengah:
-            cukup <strong>teknis</strong> untuk dibawa ke ruang sidang skripsi,
-            tapi cukup <strong>visual</strong> untuk dipresentasikan ke orang non-teknis.
+            Secara metodologis, PRISMA COKRO adalah kombinasi antara
+            <strong>framework analisis risiko privasi</strong> dan
+            <strong>artefak sistem berbasis web statis</strong>.
+            Seluruh perhitungan berjalan di browser (client-side) tanpa
+            backend dan tanpa database eksternal, sesuai batasan penelitian.
           </p>
+          <p class="about-text">
+            Sistem menerima <strong>parameter teknis pemrosesan data pribadi</strong>
+            — seperti jenis data, aktivitas pemrosesan, retensi, pihak ketiga,
+            dan kontrol keamanan — lalu mengubahnya menjadi
+            <strong>skor risiko, kategori risiko, pemetaan regulatif, dan
+            rekomendasi mitigasi</strong>.
+          </p>
+
           <div class="pill-row">
-            <span class="pill">evidence-based</span>
-            <span class="pill">regulation-aware</span>
-            <span class="pill">tooling first</span>
-            <span class="pill">bukan cuma pdf</span>
+            <span class="pill">likelihood–impact 1–5</span>
+            <span class="pill">rule-based automation</span>
+            <span class="pill">uu pdp 2022 &amp; nist csf 2.0</span>
+            <span class="pill">client-side javascript</span>
+            <span class="pill">web statis tanpa backend</span>
           </div>
 
-          <div class="three-col" style="margin-top:1.4rem;">
+          <div class="three-col">
             <div class="mini-card">
               <h3>Untuk Peneliti</h3>
               <p>
-                Menyediakan kerangka yang rapi: alur, flowchart, dan dashboard,
-                sehingga ide penelitian tidak mengambang. Semua keputusan analisis
-                bisa ditelusuri kembali ke rules yang jelas.
+                Menyediakan <strong>framework analisis risiko privasi</strong>
+                yang terdokumentasi dalam Bab II–III dan diwujudkan sebagai
+                <strong>artefak sistem di Bab IV</strong>. Setiap keputusan analisis
+                dapat ditelusuri ke teori dan ke aturan IF–THEN dalam rule-engine.
               </p>
             </div>
             <div class="mini-card">
-              <h3>Untuk Regulator</h3>
+              <h3>Untuk Organisasi & Pengendali Data</h3>
               <p>
-                Menunjukkan bagaimana UU PDP 2022 bisa diterapkan pada kasus konkret,
-                bukan sekadar daftar pasal. Setiap output risiko dihubungkan dengan
-                kewajiban dan hak subjek data.
+                Memberikan <strong>alat bantu penilaian risiko privasi</strong> yang
+                cepat, konsisten, dan terstruktur. Hasilnya mencakup nilai risiko,
+                kategori <em>Low/Medium/High</em>, dan indikator kepatuhan terhadap
+                prinsip-prinsip UU PDP 2022 serta fungsi-fungsi NIST CSF 2.0 yang relevan.
               </p>
             </div>
             <div class="mini-card">
-              <h3>Untuk Pengguna & Pengembang</h3>
+              <h3>Untuk Pengembang & Auditor</h3>
               <p>
-                Memberi gambaran cepat: seberapa tinggi risiko, bagian mana yang
-                kritis, dan langkah mitigasi apa yang masuk akal di level praktik
-                — bukan cuma istilah hukum.
+                Memudahkan simulasi berbagai skenario pemrosesan data pribadi
+                tanpa menulis kode tambahan. Pengembang dapat menguji dampak
+                perubahan desain sistem, sementara auditor internal dapat
+                menggunakan hasil dashboard sebagai bahan diskusi teknis dan regulatif.
               </p>
             </div>
           </div>
@@ -663,83 +689,128 @@
         <article class="card">
           <div class="about-tag">
             <span class="about-pill">arah ke depan</span>
-            <span>lebih dari sekadar satu studi kasus</span>
+            <span>didesain generik untuk berbagai platform digital</span>
           </div>
           <p class="about-text">
-            Walaupun saat ini fokus pada verifikasi identitas di Roblox,
-            arsitektur PRISMA COKRO sengaja dibuat generik. Ke depannya,
-            modul yang sama bisa diarahkan ke layanan lain: e-KYC, fintech,
-            aplikasi kesehatan, ataupun platform media sosial lain.
+            Objek penelitian dalam skripsi ini adalah
+            <strong>pola-pola pemrosesan data pribadi pada platform digital</strong>,
+            bukan satu aplikasi tertentu. Karena itu, arsitektur dan rule-engine
+            PRISMA COKRO sengaja dirancang <strong>generik</strong> agar dapat
+            diperluas ke berbagai konteks:
           </p>
           <p class="about-text">
-            Selama ada <strong>data pribadi</strong>, <strong>aturan main</strong>,
-            dan <strong>risiko</strong> yang perlu dijelaskan, PRISMA COKRO bisa
-            menjadi kerangka untuk membangun dashboard penilaian risiko baru.
+            e-KYC, layanan keuangan digital, platform kesehatan, layanan
+            analitik perilaku, maupun aplikasi lain yang memproses
+            data pribadi umum dan data pribadi spesifik.
           </p>
+          <p class="about-text">
+            Ke depan, pengembangan dapat diarahkan pada:
+          </p>
+          <ul class="flow-list">
+            <li class="flow-step">
+              <div class="flow-step-label">Ekspansi Aturan</div>
+              <div class="flow-step-main">Menambah cakupan rule UU PDP &amp; NIST CSF 2.0</div>
+              <div class="flow-step-note">
+                Misalnya, memasukkan lebih banyak pasal, ayat, atau kontrol spesifik
+                untuk skenario industri tertentu.
+              </div>
+            </li>
+            <li class="flow-step">
+              <div class="flow-step-label">Interoperabilitas</div>
+              <div class="flow-step-main">Integrasi dengan sistem manajemen keamanan informasi lain</div>
+              <div class="flow-step-note">
+                Seperti ISO 27001 atau kerangka tata kelola yang digunakan organisasi,
+                dengan tetap mempertahankan pendekatan risiko privasi berbasis Likelihood–Impact.
+              </div>
+            </li>
+            <li class="flow-step">
+              <div class="flow-step-label">Adaptasi Platform</div>
+              <div class="flow-step-main">Porting ke lingkungan yang lebih luas</div>
+              <div class="flow-step-note">
+                Contohnya, menjadikan PRISMA COKRO modul tambahan dalam portal internal
+                organisasi atau dipadukan dengan sistem pelaporan insiden privasi.
+              </div>
+            </li>
+          </ul>
         </article>
       </section>
 
-      <!-- BAGIAN 4: Alur Kerja Sistem -->
+      <!-- BAGIAN 4: Alur Kerja Sistem (diselaraskan dengan Bab III) -->
       <section class="section">
         <article class="card">
           <div class="about-tag">
             <span class="about-pill">alur sistem</span>
-            <span>versi teks dari flowchart</span>
+            <span>versi teks dari flowchart bab iii</span>
           </div>
-          <h2 class="about-title">Alur Kerja Sistem</h2>
+          <h2 class="about-title">Alur Kerja Sistem PRISMA COKRO</h2>
           <p class="about-text">
-            Berikut alur kerja sistem PRISMA COKRO saat pengguna menekan tombol
-            <strong>Mulai Analisis</strong> dari landing page hingga dashboard menampilkan hasil:
+            Alur berikut merangkum bagaimana framework dan aplikasi web statis
+            bekerja saat pengguna menekan tombol <strong>Mulai Analisis</strong>
+            hingga dashboard menampilkan hasil. Alur ini konsisten dengan
+            <strong>flowchart alur penelitian</strong> dan <strong>perancangan sistem</strong>
+            yang dijelaskan dalam skripsi.
           </p>
 
           <ol class="flow-list">
             <li class="flow-step">
               <div class="flow-step-label">Mulai</div>
-              <div class="flow-step-main">Pengguna membuka aplikasi web</div>
+              <div class="flow-step-main">Pengguna membuka aplikasi web analisis risiko</div>
               <div class="flow-step-note">
-                Masuk dari landing page dan menekan tombol <strong>Mulai Analisis</strong>.
+                Pengguna mengakses halaman dashboard dari landing page dan
+                siap memasukkan skenario pemrosesan data pribadi tanpa perlu instalasi tambahan.
               </div>
             </li>
             <li class="flow-step">
-              <div class="flow-step-label">Input</div>
-              <div class="flow-step-main">Pengguna mengisi form parameter risiko</div>
+              <div class="flow-step-label">Input Parameter</div>
+              <div class="flow-step-main">Pengguna mengisi parameter teknis pemrosesan data</div>
               <div class="flow-step-note">
-                Jenis data, tujuan pemrosesan, durasi penyimpanan, kontrol keamanan, dsb.
+                Misalnya jenis data pribadi (umum/spesifik/biometrik), aktivitas pemrosesan,
+                keberadaan pihak ketiga, retensi data, enkripsi, autentikasi, dan kontrol keamanan lain.
               </div>
             </li>
             <li class="flow-step">
               <div class="flow-step-label">Validasi</div>
-              <div class="flow-step-main">Sistem melakukan validasi input</div>
+              <div class="flow-step-main">Sistem memvalidasi kelengkapan & konsistensi input</div>
               <div class="flow-step-note">
-                Jika ada field penting kosong atau tidak logis, sistem menampilkan pesan kesalahan.
+                Jika ada parameter penting yang kosong atau tidak logis,
+                sistem menampilkan pesan kesalahan agar skenario yang dianalisis tetap masuk akal.
               </div>
             </li>
             <li class="flow-step">
-              <div class="flow-step-label">Perhitungan</div>
-              <div class="flow-step-main">Hitung Likelihood (P), Impact (I) &amp; Risk Score</div>
+              <div class="flow-step-label">Perhitungan Risiko</div>
+              <div class="flow-step-main">Engine menghitung Likelihood (P), Impact (I), dan Risk Score</div>
               <div class="flow-step-note">
-                Rumus <strong>R = P × I</strong> digunakan untuk mengukur level risiko numerik.
+                Menggunakan model <strong>R = P × I</strong> dengan skala 1–5,
+                sistem membentuk <strong>matriks risiko 5×5</strong>
+                dan mengklasifikasikan hasil ke kategori risiko <strong>Low, Medium, atau High</strong>.
               </div>
             </li>
             <li class="flow-step">
-              <div class="flow-step-label">Klasifikasi</div>
-              <div class="flow-step-main">Tentukan kategori risiko</div>
+              <div class="flow-step-label">Evaluasi Kepatuhan</div>
+              <div class="flow-step-main">Rule-Based Engine UU PDP 2022 &amp; NIST CSF 2.0 dijalankan</div>
               <div class="flow-step-note">
-                Skor dipetakan ke kategori <strong>Low / Medium / High</strong> sesuai batasan di skripsi.
+                Skenario pemrosesan data dicocokkan dengan aturan IF–THEN yang
+                merepresentasikan pasal-pasal UU PDP 2022 serta fungsi-fungsi NIST CSF 2.0
+                yang relevan dengan tata kelola dan perlindungan data pribadi.
               </div>
             </li>
             <li class="flow-step">
-              <div class="flow-step-label">Rule-Based</div>
-              <div class="flow-step-main">Jalankan Rule-Based Engine (UU PDP + NIST CSF)</div>
+              <div class="flow-step-label">Output Dashboard</div>
+              <div class="flow-step-main">
+                Sistem menyusun visualisasi risiko & rekomendasi mitigasi
+              </div>
               <div class="flow-step-note">
-                Sistem mencocokkan skenario risiko dengan aturan kepatuhan yang sudah kamu definisikan.
+                Dashboard menampilkan skor risiko, kategori, peta/matriks risiko,
+                ringkasan kepatuhan, dan <strong>rekomendasi mitigasi otomatis</strong>
+                yang dapat dijadikan masukan bagi pengembang, pengendali data, dan pihak terkait.
               </div>
             </li>
             <li class="flow-step">
-              <div class="flow-step-label">Output</div>
-              <div class="flow-step-main">Susun rekomendasi mitigasi &amp; tampilkan dashboard</div>
+              <div class="flow-step-label">Iterasi</div>
+              <div class="flow-step-main">Pengguna dapat mensimulasikan skenario baru</div>
               <div class="flow-step-note">
-                Pengguna dapat melihat hasil analisis atau menjalankan simulasi skenario baru.
+                Pengguna bebas mengubah parameter dan menjalankan analisis ulang
+                untuk membandingkan dampak perubahan desain sistem atau kebijakan pemrosesan data.
               </div>
             </li>
           </ol>
@@ -757,5 +828,3 @@
   </script>
 </body>
 </html>
-
-
