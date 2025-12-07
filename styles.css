@@ -1,4 +1,7 @@
-/* Re-themed styles to match neon / electric landing page UI */
+/* ===================================== */
+/* Re-themed styles – Neon / Electric UI */
+/* ===================================== */
+
 /* Core tokens */
 :root {
   --bg-main: #020617;
@@ -21,7 +24,10 @@
   --radius-full: 999px;
 }
 
-/* Basic reset */
+/* ========== */
+/* Reset      */
+/* ========== */
+
 *,
 *::before,
 *::after {
@@ -38,14 +44,23 @@ body {
 body {
   font-family: "Rajdhani", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text-main);
+
+  /* === BACKGROUND STATIC (NGGAK IKUT SCROLL) === */
   background:
     radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.2), transparent 55%),
     radial-gradient(circle at 90% 100%, rgba(249, 115, 22, 0.15), transparent 60%),
     radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 1), rgba(2, 6, 23, 1));
+  background-attachment: fixed;      /* ✨ kunci background biar nggak ikut scroll */
+  background-repeat: no-repeat;
+  background-size: cover;            /* biar nutup full layar */
   -webkit-font-smoothing: antialiased;
 }
 
-/* Layout */
+
+/* ========== */
+/* Layout     */
+/* ========== */
+
 .app-header {
   position: sticky;
   top: 0;
@@ -98,16 +113,17 @@ body {
   padding: 0 1.4rem 1.2rem;
 }
 
-/* Grid: left form – right results */
-/* Grid: left form – right results */
-/* Layout balik ke seperti versi lama: semua card (2–6) ditumpuk vertikal */
+/* Semua card ditumpuk vertikal (hasil, PDP, NIST, dst.) */
 .results-grid {
   margin-top: 1.25rem;
   display: grid;
   gap: 1.25rem;
 }
 
-/* Card */
+/* ========== */
+/* Card       */
+/* ========== */
+
 .card {
   background: var(--bg-card);
   border-radius: var(--radius-xl);
@@ -148,7 +164,10 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Form layout */
+/* ===================== */
+/* Form layout & fields  */
+/* ===================== */
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -161,10 +180,12 @@ body {
   }
 }
 
+/* Group per baris biasa */
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  margin-bottom: 0.65rem;
 }
 
 .form-group--half {
@@ -177,6 +198,35 @@ body {
   }
 }
 
+/* Group blok besar (1–5: Skenario, Data, Aktivitas, dst.) */
+.form-section {
+  grid-column: 1 / -1;
+  margin: 0 auto 1.2rem auto;
+  padding: 0.9rem 1rem;
+  width: 100%;
+  max-width: 850px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-soft);
+  background:
+    radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.14), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(249, 115, 22, 0.1), transparent 55%),
+    rgba(15, 23, 42, 0.9);
+}
+
+.form-section + .form-section {
+  margin-top: 0.35rem;
+}
+
+.form-section-title {
+  margin: 0 0 0.75rem 0;
+  font-family: "Orbitron", system-ui;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+}
+
+/* Label kecil (kalau dipakai) */
 .label {
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -221,7 +271,7 @@ textarea:focus {
   box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4);
 }
 
-/* Radio / inline options */
+/* Radio / checkbox / inline options */
 .legend {
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -250,7 +300,7 @@ textarea:focus {
   cursor: pointer;
 }
 
-/* Support lama: .inline-options kalau masih dipakai di HTML */
+/* Masih support class lama .inline-options */
 .inline-options {
   display: flex;
   flex-wrap: wrap;
@@ -262,7 +312,10 @@ textarea:focus {
   margin-right: 0.25rem;
 }
 
-/* Buttons */
+/* ===================== */
+/* Buttons               */
+/* ===================== */
+
 .form-actions {
   margin-top: 0.9rem;
   display: flex;
@@ -314,7 +367,10 @@ textarea:focus {
   background: rgba(15, 23, 42, 0.99);
 }
 
-/* Summary & results */
+/* ===================== */
+/* Summary & Results     */
+/* ===================== */
+
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -348,7 +404,7 @@ textarea:focus {
   color: var(--text-main);
 }
 
-/* Badge (dari CSS lama, masih dipakai di summary) */
+/* Badge (untuk Level Risiko) */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -376,7 +432,7 @@ textarea:focus {
   border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
-/* Status pill (untuk NIST/UU PDP) */
+/* Status pill (untuk NIST / UU PDP) */
 .status-pill {
   display: inline-flex;
   align-items: center;
@@ -407,7 +463,10 @@ textarea:focus {
   background: radial-gradient(circle at 0 50%, rgba(239, 68, 68, 0.23), transparent 70%);
 }
 
-/* Risk matrix */
+/* ===================== */
+/* Risk Matrix           */
+/* ===================== */
+
 .matrix-caption {
   font-size: 0.75rem;
   color: var(--text-muted);
@@ -482,7 +541,10 @@ textarea:focus {
   background: rgba(239, 68, 68, 0.3);
 }
 
-/* Tables & lists (dari CSS lama) */
+/* ===================== */
+/* Tables & Lists        */
+/* ===================== */
+
 .table-wrapper table {
   width: 100%;
   border-collapse: collapse;
@@ -501,7 +563,7 @@ textarea:focus {
   font-weight: 600;
 }
 
-/* NIST / UU PDP sections */
+/* NIST / UU PDP sections: warna helper */
 .good {
   color: var(--good);
 }
@@ -525,9 +587,12 @@ textarea:focus {
   margin-top: 0.25rem;
 }
 
-/* Footer */
+/* ===================== */
+/* Footer                */
+/* ===================== */
+
 .app-footer {
-  max-width: 1120px;
+  max-width: 1000px;
   margin: 0;
   padding: 0 1.4rem 1.2rem;
   font-size: 0.7rem;
