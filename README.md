@@ -1,6 +1,6 @@
 # PRISMA COKRO: Privacy Risk Management System & Analysis
 
-![PRISMA COKRO Banner](path/to/your/banner-image.png) > **Sistem Analisis Risiko Privasi pada Platform Digital Menggunakan Likelihood–Impact Engine Berbasis Rule-Based Automation.**
+**Sistem Analisis Risiko Privasi pada Platform Digital Menggunakan Likelihood–Impact Engine Berbasis Rule-Based Automation.**
 
 [![License](https://img.shields.io/badge/License-Academic-blue.svg)](#license)
 [![Tech Stack](https://img.shields.io/badge/Stack-HTML%20%7C%20CSS%20%7C%20JS-yellow.svg)](#tech-stack)
