@@ -1,70 +1,68 @@
-# 🛡️ PRISMA COKRO: Privacy Risk Analysis System
+# PRISMA COKRO: Privacy Risk Management System & Analysis
 
-![Version](https://img.shields.io/badge/version-1.0.0_Beta-blue?style=for-the-badge)
-![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
-![Status](https://img.shields.io/badge/status-Thesis_Artifact-orange?style=for-the-badge)
-![Stack](https://img.shields.io/badge/tech-HTML5%20%7C%20CSS3%20%7C%20JS-yellow?style=for-the-badge)
+![PRISMA COKRO Banner](path/to/your/banner-image.png) > **Sistem Analisis Risiko Privasi pada Platform Digital Menggunakan Likelihood–Impact Engine Berbasis Rule-Based Automation.**
 
-> **Perancangan dan Implementasi Sistem Analisis Risiko Privasi pada Platform Digital Menggunakan Likelihood–Impact Engine Berbasis Rule-Based Automation.**
+[![License](https://img.shields.io/badge/License-Academic-blue.svg)](#license)
+[![Tech Stack](https://img.shields.io/badge/Stack-HTML%20%7C%20CSS%20%7C%20JS-yellow.svg)](#tech-stack)
+[![Architecture](https://img.shields.io/badge/Architecture-Client--Side%20%7C%20Zero--Knowledge-green.svg)](#architecture)
+[![Compliance](https://img.shields.io/badge/Compliance-UU%20PDP%202022%20%7C%20NIST%20CSF%202.0-red.svg)](#compliance)
 
----
+## 📖 Tentang Proyek
 
-## 📋 Tentang Proyek
+**PRISMA COKRO** adalah sebuah artefak perangkat lunak yang dikembangkan sebagai bagian dari Skripsi Program Studi Teknik Komputer, Universitas AMIKOM Yogyakarta.
 
-**PRISMA COKRO** adalah sistem berbasis web untuk menganalisis risiko privasi pada skenario pemrosesan data pribadi. Sistem ini dirancang sebagai alat bantu (artefak) skripsi untuk mengukur risiko secara kuantitatif dan memberikan rekomendasi mitigasi secara otomatis.
+Sistem ini berfungsi sebagai alat bantu *Self-Assessment* otomatis untuk mengukur risiko privasi pada layanan digital. Menggunakan pendekatan **Hybrid**, sistem ini menggabungkan metode kuantitatif (*Likelihood-Impact Matrix*) dengan evaluasi kualitatif berbasis aturan (*Rule-Based*) yang merujuk pada regulasi **UU PDP Tahun 2022** dan standar **NIST Cybersecurity Framework 2.0**.
 
-Aplikasi ini menggabungkan:
-1.  **Metode Kuantitatif:** Matriks Risiko 5x5 (Likelihood x Impact).
-2.  **Kepatuhan Regulasi:** UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi (UU PDP).
-3.  **Standar Global:** NIST Cybersecurity Framework (CSF) 2.0.
-
-### 🌟 Fitur Utama
-
-* **Risk Engine Otomatis:** Menghitung skor risiko berdasarkan parameter teknis (enkripsi, akses kontrol, jenis data, dll).
-* **Legal Context Awareness:** Simulasi pengecekan legalitas layanan (Bank OJK, PSE Komdigi, AFPI, Standar Biometrik).
-* **Compliance Mapping:** Pemetaan otomatis celah keamanan terhadap pasal-pasal UU PDP dan fungsi NIST CSF (Govern, Identify, Protect, Detect, Respond, Recover).
-* **Recommendation Generator:** Memberikan saran mitigasi teknis dan organisasional berdasarkan profil risiko.
-* **PDF Reporting:** Ekspor hasil analisis ke dalam format laporan siap cetak.
-* **Real-time Interaction:** Kalkulasi instan di sisi klien (Client-Side) dengan antarmuka modern (Neon UI).
+### 🚀 Keunggulan Utama
+* **Zero-Knowledge Architecture:** Berjalan 100% di sisi klien (*Client-Side*). Data sensitif skenario tidak pernah dikirim ke server eksternal, menjamin privasi pengguna (*Privacy by Design*).
+* **Institutional Trust Override:** Fitur cerdas yang memvalidasi legalitas layanan (OJK/Komdigi/PSE). Layanan terdaftar otomatis mendapatkan penyesuaian skor risiko.
+* **Encrypted Local Persistence:** Menyimpan progres analisis secara lokal di browser dengan mekanisme enkripsi/obfuscation (Base64) untuk keamanan data saat istirahat (*data-at-rest*).
+* **Actionable Insights:** Memberikan rekomendasi mitigasi teknis dan hukum secara otomatis berdasarkan celah yang ditemukan.
 
 ---
 
-## ⚙️ Arsitektur & Teknologi
+## 🛠️ Fitur & Fungsionalitas
 
-Sistem ini dibangun menggunakan pendekatan **Web Standar** yang ringan dan modular, memungkinkan portabilitas tinggi tanpa ketergantungan backend yang kompleks (pada versi dasar).
-
-* **Frontend:** HTML5, CSS3 (Custom Properties / CSS Variables), Vanilla JavaScript (ES6+).
-* **Logic Core:**
-    * `riskEngine.js`: Algoritma perhitungan matriks risiko.
-    * `rules.js`: Basis aturan (Knowledge Base) untuk inferensi UU PDP & NIST.
-    * `legalCheck.js`: Modul validasi legalitas layanan (mendukung simulasi API/JSON).
-* **Styling:** Responsif dengan tema "Cyber/Neon" menggunakan CSS Grid & Flexbox.
+1.  **Likelihood-Impact Engine:**
+    * Mengkalkulasi skor risiko (1-25) berdasarkan 17 parameter teknis.
+    * Visualisasi *Interactive Heatmap* 5x5.
+2.  **Compliance Evaluator:**
+    * **UU PDP 2022:** Mendeteksi pelanggaran prinsip persetujuan (*Consent*), transparansi, dan keamanan data.
+    * **NIST CSF 2.0:** Memetakan postur keamanan ke dalam fungsi *Govern, Identify, Protect, Detect, Respond, Recover*.
+3.  **Legal Check Integration:**
+    * Validasi nama layanan terhadap *whitelist* statis (OJK, PSE, AFPI).
+    * Deteksi anomali untuk layanan ilegal (misal: Pinjol Ilegal).
+4.  **Community-Driven Feedback:**
+    * Integrasi protokol `mailto:` untuk pelaporan *bug* atau pembaruan data *registry* secara partisipatif.
 
 ---
 
-## 🚀 Cara Menjalankan (Instalasi)
+## 💻 Tech Stack (Spesifikasi Teknis)
 
-Karena aplikasi ini bersifat statis (atau menggunakan Node.js opsional), Anda dapat menjalankannya dengan mudah.
+Sistem ini dibangun sebagai **Static Web Application** tanpa dependensi backend yang berat, memastikan portabilitas dan auditabilitas kode.
 
-### Metode 1: Web Statis (Langsung Browser)
-1.  Clone repositori ini:
-    ```bash
-    git clone [https://github.com/username-anda/prisma-cokro.git](https://github.com/username-anda/prisma-cokro.git)
-    ```
-2.  Buka folder proyek.
-3.  Klik ganda file `index.html`.
-4.  Aplikasi siap digunakan.
+| Komponen | Teknologi | Keterangan |
+| :--- | :--- | :--- |
+| **Frontend** | HTML5 Semantic | Struktur dokumen yang aksesibel. |
+| **Styling** | CSS3 Custom Properties | Tema *High-Contrast Dark Mode* & *Glassmorphism*. |
+| **Logic** | Vanilla JavaScript (ES6+) | Tanpa Framework (React/Vue) untuk transparansi logika. |
+| **Visualization** | CSS Grid & DOM Manipulation | Rendering matriks risiko dan tabel dinamis. |
+| **Storage** | LocalStorage API | Penyimpanan sesi lokal terenkripsi. |
 
-### Metode 2: Menggunakan Live Server (Disarankan)
-Untuk pengalaman terbaik tanpa masalah CORS (saat memuat file JSON eksternal):
-1.  Pastikan VS Code terinstal.
-2.  Instal ekstensi **Live Server**.
-3.  Klik kanan pada `index.html` -> **Open with Live Server**.
+---
 
-### Metode 3: Backend Node.js (Opsional - Untuk Audit Mode)
-Jika Anda menggunakan cabang `feature/backend` untuk keamanan logika:
-```bash
-cd prisma-backend
-npm install
-node index.js
-# Buka http://localhost:3000
+## 📂 Struktur Direktori
+
+```text
+prisma-cokro/
+├── index.html            # Halaman Pendaratan (Landing Page)
+├── dashboard.html        # Halaman Utama Analisis (Formulir & Hasil)
+├── assets/
+│   ├── css/
+│   │   └── styles.css    # Global Styling & Themes
+│   └── js/
+│       ├── app.js        # DOM Controller & UI Interaction
+│       ├── riskEngine.js # Core Logic (Algoritma Perhitungan Risiko)
+│       ├── rules.js      # Rule-Base (UU PDP & NIST Mapping)
+│       └── legalCheck.js # Database Registry Statis (OJK/PSE)
+└── README.md             # Dokumentasi Proyek
