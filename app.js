@@ -367,4 +367,231 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
   }
+
+  // =========================================
+  // FITUR: LOCAL STORAGE PERSISTENCE (ENCRYPTED)
+  // =========================================
+  
+  const STORAGE_KEY = "prisma_cokro_history_v1";
+  const btnSave = document.getElementById("btn-save");
+  const btnHistory = document.getElementById("btn-history");
+  const historyPanel = document.getElementById("history-panel");
+  const historyList = document.getElementById("history-list");
+  const btnCloseHistory = document.getElementById("btn-close-history");
+  const btnClearHistory = document.getElementById("btn-clear-history");
+
+  // Helper untuk membaca & dekripsi data (atob)
+  function getStoredHistory() {
+    const rawData = localStorage.getItem(STORAGE_KEY);
+    if (!rawData) return [];
+    
+    try {
+      // Dekripsi: Base64 Decode -> JSON Parse
+      const decryptedString = atob(rawData);
+      return JSON.parse(decryptedString);
+    } catch (e) {
+      console.error("Gagal mendekripsi data lokal:", e);
+      // Fallback: Kembalikan array kosong jika data korup/salah format
+      return [];
+    }
+  }
+
+  // Helper untuk enkripsi & menyimpan data (btoa)
+  function saveStoredHistory(dataArray) {
+    try {
+      // Enkripsi: JSON Stringify -> Base64 Encode
+      const jsonString = JSON.stringify(dataArray);
+      const encryptedData = btoa(jsonString);
+      localStorage.setItem(STORAGE_KEY, encryptedData);
+      return true;
+    } catch (e) {
+      console.error("Gagal menyimpan/mengenkripsi data:", e);
+      return false;
+    }
+  }
+
+  // 1. Fungsi Simpan ke LocalStorage
+  if (btnSave) {
+    btnSave.addEventListener("click", () => {
+      // Validasi: Pastikan nama skenario terisi minimal
+      const scenarioName = document.getElementById("scenarioName").value;
+      if (!scenarioName) {
+        alert("Harap isi 'Nama Skenario' terlebih dahulu sebelum menyimpan.");
+        return;
+      }
+
+      // Ambil data form saat ini
+      const params = collectParams();
+      
+      // --- LOGIKA: CEK KELENGKAPAN DATA ---
+      let savedScore = 0;
+      let savedLevel = "Draft"; // Status khusus
+
+      if (params.platformType && params.dataType) {
+        // Jika data teknis sudah diisi, baru hitung risiko
+        const result = RiskEngine.analyze(params);
+        savedScore = result.riskScore;
+        savedLevel = result.riskLevel;
+      }
+
+      const newEntry = {
+        id: Date.now(),
+        timestamp: new Date().toLocaleString("id-ID"),
+        name: params.scenarioName,
+        score: savedScore,
+        level: savedLevel, 
+        formData: params 
+      };
+
+      // Ambil data lama (Decrypted)
+      const history = getStoredHistory();
+      
+      history.unshift(newEntry); // Tambah di paling atas (terbaru)
+
+      // Simpan maksimal 20 riwayat
+      if (history.length > 20) history.pop();
+
+      // Simpan data baru (Encrypted)
+      saveStoredHistory(history);
+      
+      // Feedback visual
+      const originalText = btnSave.innerText;
+      btnSave.innerText = "✔ Tersimpan!";
+      setTimeout(() => btnSave.innerText = originalText, 2000);
+      
+      // Refresh list jika panel sedang terbuka
+      if (historyPanel.style.display !== "none") {
+        renderHistory();
+      }
+    });
+  }
+
+  // 2. Fungsi Tampilkan List Riwayat
+  function renderHistory() {
+    // Ambil data (Decrypted)
+    const history = getStoredHistory();
+    
+    historyList.innerHTML = "";
+
+    if (history.length === 0) {
+      historyList.innerHTML = `<div style="text-align:center; color:#666; font-size:0.8rem; padding:1rem;">Belum ada riwayat tersimpan.</div>`;
+      return;
+    }
+
+    history.forEach((item) => {
+      const el = document.createElement("div");
+      // Styling inline
+      el.style.cssText = "background:rgba(255,255,255,0.05); padding:0.8rem; border-radius:8px; border:1px solid rgba(255,255,255,0.1); cursor:pointer; transition:background 0.2s;";
+      el.onmouseover = () => el.style.background = "rgba(34, 211, 238, 0.1)";
+      el.onmouseout = () => el.style.background = "rgba(255,255,255,0.05)";
+      
+      // --- LOGIKA WARNA ---
+      let badgeColor = "#9ca3af"; // Default abu-abu
+      let badgeText = item.level;
+      let scoreText = `Score: ${item.score}`;
+
+      if (item.level === "Draft") {
+        badgeColor = "rgba(255, 255, 255, 0.15)"; // Transparan / Putih pudar
+        badgeText = "Analisis Belum Dihitung"; // Teks khusus
+        scoreText = "-"; // Score disembunyikan
+      } else if (item.level === "Tinggi") {
+        badgeColor = "#ef4444";
+      } else if (item.level === "Sedang") {
+        badgeColor = "#eab308";
+      } else if (item.level === "Rendah") {
+        badgeColor = "#22c55e";
+      }
+
+      el.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-weight:bold; font-size:0.9rem; color:#fff;">${item.name}</div>
+            <div style="font-size:0.7rem; color:#9ca3af;">${item.timestamp}</div>
+          </div>
+          <div style="text-align:right;">
+             <span style="background:${badgeColor}; color:${item.level === 'Draft' ? '#ccc' : '#000'}; border:${item.level === 'Draft' ? '1px solid #555' : 'none'}; padding:2px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold;">
+                ${badgeText}
+             </span>
+             <div style="font-size:0.7rem; color:#9ca3af; margin-top:2px;">${scoreText}</div>
+          </div>
+        </div>
+      `;
+
+      // Klik untuk Load Data
+      el.addEventListener("click", () => {
+        loadFormData(item.formData);
+        historyPanel.style.display = "none";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        
+        // Pesan berbeda jika itu draft
+        if(item.level === "Draft") {
+            alert(`Draf "${item.name}" dimuat. Silakan lengkapi data lalu klik 'Hitung Risiko'.`);
+        } else {
+            alert(`Skenario "${item.name}" berhasil dimuat kembali!`);
+        }
+      });
+
+      historyList.appendChild(el);
+    });
+  }
+
+  // 3. Fungsi Restore Data ke Form (Tetap sama)
+  function loadFormData(data) {
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val || "";
+    };
+
+    setVal("scenarioName", data.scenarioName);
+    setVal("platformType", data.platformType);
+    setVal("serviceName", data.serviceName);
+    setVal("dataType", data.dataType);
+    setVal("processingActivity", data.processingActivity);
+    setVal("processingPurpose", data.processingPurpose);
+    setVal("encryption", data.encryption);
+    setVal("accessControl", data.accessControl);
+    setVal("authMethod", data.authMethod);
+    setVal("consentType", data.consentType);
+    setVal("privacyPolicy", data.privacyPolicy);
+    setVal("incidentResponsePlan", data.incidentResponsePlan);
+    setVal("detectSystem", data.detectSystem);
+    setVal("backupPolicy", data.backupPolicy);
+
+    const setRadio = (name, val) => {
+      const radios = document.querySelectorAll(`input[name="${name}"]`);
+      radios.forEach(r => r.checked = (r.value === val));
+    };
+    setRadio("thirdParty", data.thirdParty);
+    setRadio("purposeSpecified", data.purposeSpecified);
+
+    const checkboxes = document.querySelectorAll(`input[name="legalDataCategory"]`);
+    checkboxes.forEach(cb => {
+      cb.checked = data.dataCategories && data.dataCategories.includes(cb.value);
+    });
+  }
+
+  // 4. Event Listeners Panel (Tetap sama)
+  if (btnHistory) {
+    btnHistory.addEventListener("click", () => {
+      renderHistory();
+      historyPanel.style.display = "block";
+      historyPanel.scrollIntoView({ behavior: "smooth" });
+    });
+  }
+
+  if (btnCloseHistory) {
+    btnCloseHistory.addEventListener("click", () => {
+      historyPanel.style.display = "none";
+    });
+  }
+
+  if (btnClearHistory) {
+    btnClearHistory.addEventListener("click", () => {
+      if (confirm("Yakin ingin menghapus seluruh riwayat analisis?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        renderHistory();
+      }
+    });
+  }
+
 });
