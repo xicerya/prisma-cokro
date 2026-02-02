@@ -16,6 +16,65 @@
       gap: 0.75rem;
       align-items: center;
     }
+
+    /* ========================================= */
+    /* CSS PAKSA PERATAAN TOMBOL (TENGAH)        */
+    /* ========================================= */
+    .form-actions {
+      grid-column: 1 / -1 !important;
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: 1rem !important;
+      margin-top: 2rem !important;
+      padding-top: 1.5rem !important;
+      border-top: 1px solid rgba(148, 163, 184, 0.2);
+      flex-wrap: wrap !important;
+    }
+
+    .form-actions button {
+      width: auto !important;
+      min-width: 120px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ========================================= */
+    /* CSS UNTUK TABEL RESPONSIF (GESER HP)      */
+    /* ========================================= */
+    .table-wrapper {
+      width: 100%;
+      display: block;
+      overflow-x: auto; /* INI KUNCINYA: Biar bisa digeser horizontal */
+      -webkit-overflow-scrolling: touch; /* Biar scroll halus di iPhone */
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      margin-top: 0.5rem;
+    }
+
+    /* Paksa tabel punya lebar minimal */
+    /* Jika layar HP lebih kecil dari 600px, scrollbar akan muncul */
+    .table-wrapper table {
+      width: 100%;
+      min-width: 600px !important; 
+      border-collapse: collapse;
+    }
+    
+    /* Styling tambahan untuk scrollbar agar terlihat modern */
+    .table-wrapper::-webkit-scrollbar {
+      height: 8px;
+    }
+    .table-wrapper::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.5);
+    }
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
@@ -30,9 +89,6 @@
   </header>
 
   <main class="app-main">
-    <!-- =================== -->
-    <!-- CARD: FORM INPUT    -->
-    <!-- =================== -->
     <section class="card">
       <h2>Input Parameter Pemrosesan Data</h2>
       <p class="subtitle">
@@ -40,13 +96,9 @@
       </p>
 
       <form id="risk-form" class="form-grid">
-        <!-- =================== -->
-        <!-- 1. SKENARIO & PLATFORM -->
-        <!-- =================== -->
         <div class="form-section">
           <h3 class="form-section-title">1. Informasi Skenario &amp; Platform</h3>
 
-          <!-- 1. Nama Skenario -->
           <div class="form-group">
             <label for="scenarioName">Nama skenario</label>
             <input
@@ -59,7 +111,6 @@
             </p>
           </div>
 
-          <!-- 1b. Jenis platform -->
           <div class="form-group">
             <label for="platformType">Jenis platform / layanan</label>
             <select id="platformType" required>
@@ -73,11 +124,10 @@
               <option value="lainnya">Lainnya</option>
             </select>
             <p class="field-hint">
-              Digunakan untuk analisis legalitas (OJK, Komdigi PSE, AFPI, registry biometrik, dll.).
+              Digunakan untuk analisis legalitas (OJK, Komdigi PSE, AFPI, Registry Biometrik, dll).
             </p>
           </div>
 
-          <!-- 1c. Nama layanan / aplikasi -->
           <div class="form-group">
             <label for="serviceName">Nama layanan / aplikasi (terdaftar)</label>
             <input
@@ -86,20 +136,16 @@
               placeholder="Contoh: DANA, OVO, GoPay, ShopeePay, Mandiri, BCA, Tokopedia, Roblox"
             />
             <p class="field-hint">
-              Tulis nama resmi layanan sebagaimana tertera di daftar OJK / Komdigi PSE / AFPI / vendor biometrik.
-              Sistem akan menormalisasi huruf (tidak case sensitive). Contoh sah:
+              Tulis nama resmi layanan sebagaimana tertera di daftar OJK / Komdigi PSE / AFPI / Vendor Biometrik.
+              Sistem akan menormalisasi huruf (TIDAK CASE SENSITIF). Contoh sah:
               <em>DANA</em>, <em>OVO</em>, <em>GoPay</em>, <em>ShopeePay</em>, <em>Mandiri</em>, <em>BCA</em>, <em>Tokopedia</em>, <em>Roblox</em>.
             </p>
           </div>
         </div>
 
-        <!-- =================== -->
-        <!-- 2. DATA PRIBADI    -->
-        <!-- =================== -->
         <div class="form-section">
           <h3 class="form-section-title">2. Data Pribadi yang Diproses</h3>
 
-          <!-- 2. Jenis data pribadi utama -->
           <div class="form-group">
             <label for="dataType">Jenis data pribadi utama</label>
             <select id="dataType" required>
@@ -114,7 +160,6 @@
             </select>
           </div>
 
-          <!-- 2b. Jenis data spesifik untuk analisis legalitas -->
           <div class="form-group">
             <label>Jenis data spesifik yang dikumpulkan (untuk analisis legalitas)</label>
 
@@ -129,20 +174,12 @@
               <label><input type="checkbox" name="legalDataCategory" value="wajah" /> Wajah (biometrik)</label>
               <label><input type="checkbox" name="legalDataCategory" value="suara" /> Suara (biometrik)</label>
             </div>
-
-            <p class="field-hint">
-              Dipakai untuk logika: Bank–KTP/SIM/Selfie, Website–KTP/SIM, E-commerce–Nama/Alamat, Game–Wajah/Suara.
-            </p>
           </div>
         </div>
 
-        <!-- =================== -->
-        <!-- 3. AKTIVITAS & TUJUAN -->
-        <!-- =================== -->
         <div class="form-section">
           <h3 class="form-section-title">3. Aktivitas &amp; Tujuan Pemrosesan</h3>
 
-          <!-- 3. Aktivitas pemrosesan -->
           <div class="form-group">
             <label for="processingActivity">Aktivitas pemrosesan utama</label>
             <select id="processingActivity" required>
@@ -157,7 +194,6 @@
             </select>
           </div>
 
-          <!-- 4. Tujuan pemrosesan -->
           <div class="form-group">
             <label for="processingPurpose">Tujuan utama pemrosesan data</label>
             <select id="processingPurpose" required>
@@ -185,28 +221,23 @@
           </div>
         </div>
 
-        <!-- =================== -->
-        <!-- 4. LEGALITAS & GOVERNANCE -->
-        <!-- =================== -->
         <div class="form-section">
           <h3 class="form-section-title">4. Legalitas &amp; Tata Kelola</h3>
 
-          <!-- 5. Pihak ketiga -->
           <div class="form-group">
-            <label>Apakah melibatkan pihak ketiga (vendor / cloud / mitra)?</label>
+            <label>Apakah melibatkan pihak ketiga (vendor/cloud/mitra)?</label>
             <div class="inline-options">
               <label><input type="radio" name="thirdParty" value="yes" /> Ya</label>
               <label><input type="radio" name="thirdParty" value="no" /> Tidak</label>
             </div>
           </div>
 
-          <!-- 9. Penjelasan tujuan ke pengguna -->
           <div class="form-group">
             <label>Apakah tujuan pengumpulan data dijelaskan dengan jelas ke pengguna?</label>
             <div class="inline-options">
               <label>
                 <input type="radio" name="purposeSpecified" value="yes" />
-                Ya, dijelaskan di awal (privacy policy / form)
+                Ya, dijelaskan di awal (privacy policy)
               </label>
               <label>
                 <input type="radio" name="purposeSpecified" value="no" />
@@ -216,31 +247,26 @@
           </div>
         </div>
 
-        <!-- =================== -->
-        <!-- 5. PENGAMANAN & NIST -->
-        <!-- =================== -->
         <div class="form-section">
           <h3 class="form-section-title">5. Pengamanan Teknis &amp; Organisasi</h3>
 
-          <!-- 6. Enkripsi -->
           <div class="form-group">
             <label for="encryption">Cara melindungi data dengan enkripsi</label>
             <select id="encryption" required>
               <option value="">-- Pilih kondisi --</option>
-              <option value="none">Tidak ada enkripsi khusus</option>
+              <option value="none">Tidak dikunci (Polosan / Teks Biasa)</option>
               <option value="in_transit">
-                Hanya saat dikirim (in transit, misalnya HTTPS)
+                Dikunci saat dikirim (ada gembok/HTTPS)
               </option>
               <option value="at_rest">
-                Hanya saat disimpan (at rest, misalnya enkripsi database)
+                Dikunci saat disimpan di server (Database diacak)
               </option>
               <option value="both">
-                Saat dikirim dan saat disimpan (in transit &amp; at rest)
+               Dikunci super ketat (saat dikirim &amp; disimpan)
               </option>
             </select>
           </div>
 
-          <!-- 7. Kontrol akses -->
           <div class="form-group">
             <label for="accessControl">Kontrol akses ke data</label>
             <select id="accessControl" required>
@@ -253,30 +279,28 @@
             </select>
           </div>
 
-          <!-- 8. Metode autentikasi -->
           <div class="form-group">
             <label for="authMethod">Metode login / autentikasi pengguna</label>
             <select id="authMethod" required>
               <option value="">-- Pilih metode --</option>
               <option value="none">Tidak ada autentikasi khusus</option>
-              <option value="password_only">Password saja</option>
+              <option value="password_only">Hanya pakai Password/PIN biasa</option>
               <option value="password_mfa">
-                Password + faktor tambahan (OTP, aplikasi autentikator, dsb.)
+                Password + Kode OTP (SMS/WA/App)
               </option>
               <option value="sso">
-                Login lewat pihak ketiga (SSO / OAuth, misalnya Google, Facebook)
+                Login lewat pihak ketiga (SSO)
               </option>
             </select>
           </div>
 
-          <!-- 10. Consent -->
           <div class="form-group">
             <label for="consentType">Cara meminta persetujuan (consent) pengguna</label>
             <select id="consentType" required>
               <option value="">-- Pilih cara consent --</option>
-              <option value="none">Tidak ada consent khusus</option>
+              <option value="none">Tidak ditanya persetujuan sama sekali</option>
               <option value="implicit">
-                Tersirat (hanya lewat syarat &amp; ketentuan umum)
+                Langsung setuju otomatis saat daftar
               </option>
               <option value="explicit">
                 Jelas &amp; spesifik (checkbox / tombol setuju yang terpisah)
@@ -284,7 +308,6 @@
             </select>
           </div>
 
-          <!-- 11. Kebijakan privasi -->
           <div class="form-group">
             <label for="privacyPolicy">
               Apakah ada kebijakan privasi / aturan tertulis tentang pengelolaan data?
@@ -294,12 +317,11 @@
               <option value="none">Tidak ada dokumen kebijakan privasi</option>
               <option value="informal">Ada, tapi belum rapi / belum konsisten</option>
               <option value="formal">
-                Ada, tertulis dan sudah disosialisasikan ke tim
+                Ada, tertulis dan sudah disosialisasikan
               </option>
             </select>
           </div>
 
-          <!-- 12. Rencana respons insiden -->
           <div class="form-group">
             <label for="incidentResponsePlan">
               Jika terjadi kebocoran data, apakah ada rencana apa yang harus dilakukan?
@@ -314,7 +336,6 @@
             </select>
           </div>
 
-          <!-- 13. Sistem deteksi -->
           <div class="form-group">
             <label for="detectSystem">
               Apakah ada sistem untuk memantau dan mendeteksi insiden keamanan?
@@ -326,12 +347,11 @@
                 Ada log dasar (misalnya log akses), tapi jarang dicek
               </option>
               <option value="advanced">
-                Ada pemantauan rutin / alat khusus (SIEM, alert otomatis, dsb.)
+                Ada pemantauan rutin / alat khusus (SIEM, alert otomatis, dsb)
               </option>
             </select>
           </div>
 
-          <!-- 14. Backup & pemulihan -->
           <div class="form-group">
             <label for="backupPolicy">
               Apakah ada backup dan rencana pemulihan data jika terjadi masalah?
@@ -349,19 +369,42 @@
           </div>
         </div>
 
-        <!-- =================== -->
-        <!-- TOMBOL               -->
-        <!-- =================== -->
         <div class="form-actions">
-          <button type="submit" class="btn-primary">Hitung Risiko</button>
-          <button type="reset" class="btn-secondary" id="reset-btn">Reset</button>
+          <button type="submit" class="btn-primary">
+            Hitung Risiko
+          </button>
+          
+          <button type="button" id="btn-save" class="btn-secondary">
+            Simpan Draft
+          </button>
+          
+          <button type="button" id="btn-history" class="btn-secondary">
+            Riwayat Penilaian
+          </button>
+          
+          <button type="reset" class="btn-secondary" id="reset-btn">
+            Reset
+          </button>
         </div>
       </form>
     </section>
 
-    <!-- =================== -->
-    <!-- CARD: HASIL ANALISIS -->
-    <!-- =================== -->
+    <section id="history-panel" class="card" style="display: none; border: 1px dashed var(--accent);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h3 style="margin:0; font-size:1rem; color:var(--accent);">Riwayat Penilaian (Lokal)</h3>
+        <button type="button" id="btn-close-history" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">❌</button>
+      </div>
+      
+      <div id="history-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:300px; overflow-y:auto;">
+        </div>
+      
+      <div style="margin-top:1rem; text-align:right;">
+        <button type="button" id="btn-clear-history" style="font-size:0.75rem; color:var(--bad); background:none; border:1px solid var(--bad); padding:5px 10px; border-radius:4px; cursor:pointer;">
+          Hapus Semua Riwayat
+        </button>
+      </div>
+    </section>
+
     <section class="results-grid">
       <article class="card" id="summary-card">
         <h2>Ringkasan Risiko</h2>
@@ -406,13 +449,6 @@
     </section>
   </main>
 
-  <footer class="app-footer">
-    <p>
-      Prototype sistem analisis risiko privasi – dapat digunakan sebagai artefak implementasi dalam skripsi.
-    </p>
-  </footer>
-
-  <!-- PENTING: urutan script existing -->
   <script src="rules.js"></script>
   <script src="legalCheck.js"></script>
   <script src="riskEngine.js"></script>
