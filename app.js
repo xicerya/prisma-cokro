@@ -1,5 +1,6 @@
 // app.js
 // Interaksi UI untuk Dashboard Analisis Risiko Privasi
+// REVISI: Penambahan Timestamp Real-time pada Hasil Analisis
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("risk-form");
@@ -10,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const nistContainer = document.getElementById("nist-results");
   const recContainer = document.getElementById("recommendations");
 
+  // Inisialisasi matriks kosong saat pertama load
   buildEmptyMatrix();
 
   if (!form) {
@@ -65,20 +67,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     platformSelect.addEventListener("change", filterServiceOptions);
-    // jalan sekali di awal (kalau user belum memilih apa-apa, semua tetap muncul)
+    // jalan sekali di awal
     filterServiceOptions();
   }
 
+  // ======================
+  // EVENT HANDLER: SUBMIT
+  // ======================
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+    
+    // 1. Kumpulkan Data
     const params = collectParams();
+    
+    // 2. Jalankan Analisis (Risk Engine)
     const result = RiskEngine.analyze(params);
 
+    // 3. Render Semua Hasil ke UI
     renderSummary(params, result);
     renderMatrix(result);
     renderPDP(result.pdpResults);
     renderNIST(result.nistResults);
     renderRecommendations(result.recommendations);
+
+    // Scroll otomatis ke bagian hasil agar user sadar sudah dihitung
+    document.getElementById("summary-card").scrollIntoView({ behavior: "smooth" });
   });
 
   resetBtn.addEventListener("click", () => {
@@ -160,10 +173,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ======================
-  // RINGKASAN & HASIL
+  // RINGKASAN & HASIL (DENGAN TIMESTAMP)
   // ======================
   function renderSummary(params, result) {
     summaryContent.classList.remove("placeholder");
+    
+    // --- 1. LOGIKA TIMESTAMP (BARU) ---
+    // Mengambil waktu saat ini dan memformatnya ke Bahasa Indonesia
+    const now = new Date();
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit', 
+        minute: '2-digit',
+        timeZoneName: 'short'
+    };
+    const timeString = now.toLocaleDateString('id-ID', options);
+
+    // Tentukan warna badge
     const badgeClass =
       result.riskLevel === "Tinggi"
         ? "high"
@@ -181,9 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
             Nilai Likelihood &amp; Impact ditentukan otomatis berdasarkan rule engine:
             ${result.autoInfo.reasons.join(" ")}
          </p>`
-      : `<p style="margin-top:0.5rem;font-size:0.8rem;color:#9ca3af;">
-            Nilai Likelihood &amp; Impact menggunakan input manual pengguna.
-         </p>`;
+      : "";
 
     const legalBlock =
       result.legalContext && result.legalContext.legalStatus
@@ -204,28 +231,38 @@ document.addEventListener("DOMContentLoaded", () => {
            </p>`
         : "";
 
+    // --- 2. RENDER HTML ---
+    // Perhatikan bagian div pertama yang menampilkan timestamp
     summaryContent.innerHTML = `
-      <p style="margin-bottom:0.75rem;">
-        Hasil analisis untuk: <strong>${escapeHtml(scenarioTitle)}</strong>
-      </p>
+      <div style="border-bottom: 1px solid rgba(148, 163, 184, 0.2); padding-bottom: 0.8rem; margin-bottom: 1rem;">
+          <p style="margin-bottom:0.25rem; font-size: 1rem;">
+            Hasil analisis untuk: <strong style="color:var(--text-main);">${escapeHtml(scenarioTitle)}</strong>
+          </p>
+          <p style="font-size:0.75rem; color:#9ca3af; display:flex; align-items:center; gap:0.5rem;">
+            <span>Waktu Analisis:</span>
+            <span style="color:var(--accent); font-weight:600;">${timeString}</span>
+          </p>
+      </div>
+
       <div class="summary-grid">
         <div class="summary-item">
-          <h3>Likelihood</h3>
-          <p>${result.likelihood}</p>
+          <h3>Likelihood (Kemungkinan)</h3>
+          <p style="font-size:1.2rem; font-weight:bold;">${result.likelihood}</p>
         </div>
         <div class="summary-item">
-          <h3>Impact</h3>
-          <p>${result.impact}</p>
+          <h3>Impact (Dampak)</h3>
+          <p style="font-size:1.2rem; font-weight:bold;">${result.impact}</p>
         </div>
         <div class="summary-item">
           <h3>Risk Score</h3>
-          <p>${result.riskScore}</p>
+          <p style="font-size:1.2rem; font-weight:bold;">${result.riskScore}</p>
+        </div>
+        <div class="summary-item" style="display:flex; flex-direction:column; justify-content:center;">
+          <h3 style="margin-bottom:0.2rem;">Level Risiko</h3>
+          <div><span class="badge ${badgeClass}" style="font-size:0.9rem;">${result.riskLevel}</span></div>
         </div>
       </div>
-      <p style="margin-bottom:0.25rem;">
-        Level Risiko:
-        <span class="badge ${badgeClass}">${result.riskLevel}</span>
-      </p>
+      
       ${autoBlock}
       ${legalBlock}
     `;
@@ -260,6 +297,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const i = parseInt(cell.dataset.impact, 10);
       if (l === result.likelihood && i === result.impact) {
         cell.classList.add("active");
+        // Tambahkan efek kedip (opsional)
+        cell.style.animation = "none";
+        cell.offsetHeight; /* trigger reflow */
+        cell.style.animation = "pulse 1.5s infinite";
       }
     });
   }
@@ -386,12 +427,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!rawData) return [];
     
     try {
-      // Dekripsi: Base64 Decode -> JSON Parse
       const decryptedString = atob(rawData);
       return JSON.parse(decryptedString);
     } catch (e) {
       console.error("Gagal mendekripsi data lokal:", e);
-      // Fallback: Kembalikan array kosong jika data korup/salah format
       return [];
     }
   }
@@ -399,7 +438,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Helper untuk enkripsi & menyimpan data (btoa)
   function saveStoredHistory(dataArray) {
     try {
-      // Enkripsi: JSON Stringify -> Base64 Encode
       const jsonString = JSON.stringify(dataArray);
       const encryptedData = btoa(jsonString);
       localStorage.setItem(STORAGE_KEY, encryptedData);
@@ -413,53 +451,47 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. Fungsi Simpan ke LocalStorage
   if (btnSave) {
     btnSave.addEventListener("click", () => {
-      // Validasi: Pastikan nama skenario terisi minimal
       const scenarioName = document.getElementById("scenarioName").value;
       if (!scenarioName) {
         alert("Harap isi 'Nama Skenario' terlebih dahulu sebelum menyimpan.");
         return;
       }
 
-      // Ambil data form saat ini
       const params = collectParams();
       
-      // --- LOGIKA: CEK KELENGKAPAN DATA ---
       let savedScore = 0;
-      let savedLevel = "Draft"; // Status khusus
+      let savedLevel = "Draft"; 
 
       if (params.platformType && params.dataType) {
-        // Jika data teknis sudah diisi, baru hitung risiko
         const result = RiskEngine.analyze(params);
         savedScore = result.riskScore;
         savedLevel = result.riskLevel;
       }
 
+      // Gunakan waktu simpan
+      const nowSave = new Date();
+      const saveTime = nowSave.toLocaleDateString('id-ID', {
+         day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'
+      });
+
       const newEntry = {
         id: Date.now(),
-        timestamp: new Date().toLocaleString("id-ID"),
+        timestamp: saveTime,
         name: params.scenarioName,
         score: savedScore,
         level: savedLevel, 
         formData: params 
       };
 
-      // Ambil data lama (Decrypted)
       const history = getStoredHistory();
-      
-      history.unshift(newEntry); // Tambah di paling atas (terbaru)
-
-      // Simpan maksimal 20 riwayat
+      history.unshift(newEntry); 
       if (history.length > 20) history.pop();
-
-      // Simpan data baru (Encrypted)
       saveStoredHistory(history);
       
-      // Feedback visual
       const originalText = btnSave.innerText;
       btnSave.innerText = "✔ Tersimpan!";
       setTimeout(() => btnSave.innerText = originalText, 2000);
       
-      // Refresh list jika panel sedang terbuka
       if (historyPanel.style.display !== "none") {
         renderHistory();
       }
@@ -468,9 +500,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 2. Fungsi Tampilkan List Riwayat
   function renderHistory() {
-    // Ambil data (Decrypted)
     const history = getStoredHistory();
-    
     historyList.innerHTML = "";
 
     if (history.length === 0) {
@@ -480,20 +510,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     history.forEach((item) => {
       const el = document.createElement("div");
-      // Styling inline
       el.style.cssText = "background:rgba(255,255,255,0.05); padding:0.8rem; border-radius:8px; border:1px solid rgba(255,255,255,0.1); cursor:pointer; transition:background 0.2s;";
       el.onmouseover = () => el.style.background = "rgba(34, 211, 238, 0.1)";
       el.onmouseout = () => el.style.background = "rgba(255,255,255,0.05)";
       
-      // --- LOGIKA WARNA ---
-      let badgeColor = "#9ca3af"; // Default abu-abu
+      let badgeColor = "#9ca3af"; 
       let badgeText = item.level;
       let scoreText = `Score: ${item.score}`;
 
       if (item.level === "Draft") {
-        badgeColor = "rgba(255, 255, 255, 0.15)"; // Transparan / Putih pudar
-        badgeText = "Analisis Belum Dihitung"; // Teks khusus
-        scoreText = "-"; // Score disembunyikan
+        badgeColor = "rgba(255, 255, 255, 0.15)";
+        badgeText = "Analisis Belum Dihitung"; 
+        scoreText = "-"; 
       } else if (item.level === "Tinggi") {
         badgeColor = "#ef4444";
       } else if (item.level === "Sedang") {
@@ -505,7 +533,7 @@ document.addEventListener("DOMContentLoaded", () => {
       el.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <div>
-            <div style="font-weight:bold; font-size:0.9rem; color:#fff;">${item.name}</div>
+            <div style="font-weight:bold; font-size:0.9rem; color:#fff;">${escapeHtml(item.name)}</div>
             <div style="font-size:0.7rem; color:#9ca3af;">${item.timestamp}</div>
           </div>
           <div style="text-align:right;">
@@ -517,17 +545,14 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
-      // Klik untuk Load Data
       el.addEventListener("click", () => {
         loadFormData(item.formData);
         historyPanel.style.display = "none";
         window.scrollTo({ top: 0, behavior: "smooth" });
-        
-        // Pesan berbeda jika itu draft
         if(item.level === "Draft") {
-            alert(`Draf "${item.name}" dimuat. Silakan lengkapi data lalu klik 'Hitung Risiko'.`);
+            alert(`Draf "${item.name}" dimuat.`);
         } else {
-            alert(`Skenario "${item.name}" berhasil dimuat kembali!`);
+            alert(`Skenario "${item.name}" dimuat kembali.`);
         }
       });
 
@@ -535,7 +560,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 3. Fungsi Restore Data ke Form (Tetap sama)
+  // 3. Fungsi Restore Data ke Form
   function loadFormData(data) {
     const setVal = (id, val) => {
       const el = document.getElementById(id);
@@ -564,13 +589,18 @@ document.addEventListener("DOMContentLoaded", () => {
     setRadio("thirdParty", data.thirdParty);
     setRadio("purposeSpecified", data.purposeSpecified);
 
-    const checkboxes = document.querySelectorAll(`input[name="legalDataCategory"]`);
-    checkboxes.forEach(cb => {
-      cb.checked = data.dataCategories && data.dataCategories.includes(cb.value);
-    });
+    // Reset checkboxes dulu
+    document.querySelectorAll(`input[name="legalDataCategory"]`).forEach(cb => cb.checked = false);
+    // Centang yang sesuai
+    if (data.dataCategories) {
+        data.dataCategories.forEach(val => {
+            const cb = document.querySelector(`input[name="legalDataCategory"][value="${val}"]`);
+            if (cb) cb.checked = true;
+        });
+    }
   }
 
-  // 4. Event Listeners Panel (Tetap sama)
+  // 4. Event Listeners Panel
   if (btnHistory) {
     btnHistory.addEventListener("click", () => {
       renderHistory();
