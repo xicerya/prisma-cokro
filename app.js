@@ -1,6 +1,6 @@
 // app.js
 // Interaksi UI untuk Dashboard Analisis Risiko Privasi
-// REVISI: Penambahan Timestamp Real-time pada Hasil Analisis
+// REVISI: Penambahan Fitur Hapus Riwayat Per Item
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("risk-form");
@@ -448,6 +448,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Helper khusus untuk menghapus 1 item
+  function removeHistoryItem(idToRemove) {
+    const current = getStoredHistory();
+    const updated = current.filter(item => item.id !== idToRemove);
+    saveStoredHistory(updated);
+    renderHistory(); // Refresh tampilan
+  }
+
   // 1. Fungsi Simpan ke LocalStorage
   if (btnSave) {
     btnSave.addEventListener("click", () => {
@@ -475,7 +483,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const newEntry = {
-        id: Date.now(),
+        id: Date.now(), // Unique ID berdasarkan waktu
         timestamp: saveTime,
         name: params.scenarioName,
         score: savedScore,
@@ -498,7 +506,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 2. Fungsi Tampilkan List Riwayat
+  // 2. Fungsi Tampilkan List Riwayat (UPDATED: Add Delete Button)
   function renderHistory() {
     const history = getStoredHistory();
     historyList.innerHTML = "";
@@ -509,18 +517,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     history.forEach((item) => {
+      // Container Item
       const el = document.createElement("div");
       el.style.cssText = "background:rgba(255,255,255,0.05); padding:0.8rem; border-radius:8px; border:1px solid rgba(255,255,255,0.1); cursor:pointer; transition:background 0.2s;";
       el.onmouseover = () => el.style.background = "rgba(34, 211, 238, 0.1)";
       el.onmouseout = () => el.style.background = "rgba(255,255,255,0.05)";
       
+      // Styling Badge & Score
       let badgeColor = "#9ca3af"; 
       let badgeText = item.level;
       let scoreText = `Score: ${item.score}`;
 
       if (item.level === "Draft") {
         badgeColor = "rgba(255, 255, 255, 0.15)";
-        badgeText = "Analisis Belum Dihitung"; 
+        badgeText = "DRAFT"; 
         scoreText = "-"; 
       } else if (item.level === "Tinggi") {
         badgeColor = "#ef4444";
@@ -530,21 +540,30 @@ document.addEventListener("DOMContentLoaded", () => {
         badgeColor = "#22c55e";
       }
 
+      // Render HTML dalam item
       el.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div>
+          <div style="flex:1;">
             <div style="font-weight:bold; font-size:0.9rem; color:#fff;">${escapeHtml(item.name)}</div>
             <div style="font-size:0.7rem; color:#9ca3af;">${item.timestamp}</div>
           </div>
-          <div style="text-align:right;">
-             <span style="background:${badgeColor}; color:${item.level === 'Draft' ? '#ccc' : '#000'}; border:${item.level === 'Draft' ? '1px solid #555' : 'none'}; padding:2px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold;">
-                ${badgeText}
-             </span>
-             <div style="font-size:0.7rem; color:#9ca3af; margin-top:2px;">${scoreText}</div>
+          
+          <div style="text-align:right; display:flex; align-items:center; gap:8px;">
+             <div>
+               <span style="background:${badgeColor}; color:${item.level === 'Draft' ? '#ccc' : '#000'}; border:${item.level === 'Draft' ? '1px solid #555' : 'none'}; padding:2px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold;">
+                  ${badgeText}
+               </span>
+               <div style="font-size:0.7rem; color:#9ca3af; margin-top:2px;">${scoreText}</div>
+             </div>
+
+             <button class="btn-delete-item" title="Hapus item ini">
+                🗑
+             </button>
           </div>
         </div>
       `;
 
+      // Event Listener: Klik Item (Muat Data)
       el.addEventListener("click", () => {
         loadFormData(item.formData);
         historyPanel.style.display = "none";
@@ -555,6 +574,18 @@ document.addEventListener("DOMContentLoaded", () => {
             alert(`Skenario "${item.name}" dimuat kembali.`);
         }
       });
+
+      // Event Listener: Klik Tombol Hapus (Hapus Data)
+      const deleteBtn = el.querySelector(".btn-delete-item");
+      if (deleteBtn) {
+        deleteBtn.addEventListener("click", (e) => {
+           e.stopPropagation(); // PENTING: Supaya tidak memicu klik pada item induk (loadFormData)
+           
+           if(confirm(`Yakin ingin menghapus riwayat "${item.name}"?`)) {
+              removeHistoryItem(item.id);
+           }
+        });
+      }
 
       historyList.appendChild(el);
     });
@@ -617,7 +648,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (btnClearHistory) {
     btnClearHistory.addEventListener("click", () => {
-      if (confirm("Yakin ingin menghapus seluruh riwayat analisis?")) {
+      if (confirm("Yakin ingin menghapus SELURUH riwayat analisis?")) {
         localStorage.removeItem(STORAGE_KEY);
         renderHistory();
       }
