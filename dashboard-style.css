@@ -717,3 +717,29 @@ textarea:focus {
   gap: 0.8rem; /* Jarak antar tombol */
   margin-top: 0.5rem;
 }
+
+/* ================================================= */
+/* HISTORY DELETE BUTTON STYLE                       */
+/* ================================================= */
+.btn-delete-item {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--bad);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: fit-content;
+}
+
+.btn-delete-item:hover {
+  background: var(--bad);
+  color: #fff;
+  border-color: var(--bad);
+  transform: scale(1.05);
+}
