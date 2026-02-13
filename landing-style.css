@@ -260,3 +260,84 @@ footer {
   .nav-links { display: none; }
 }
 
+/* ========================================= */
+/* KHUSUS TYPOGRAPHY & LAYOUT ABOUT SECTION  */
+/* ========================================= */
+
+/* Subtitle di bawah judul profil */
+.about-subtitle {
+  color: var(--text-muted);
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Teks kecil warna neon (Latar Belakang, Fitur Penting) */
+.eyebrow {
+  color: var(--accent);
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Judul dengan font Orbitron */
+.heading-orbitron {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+/* Paragraf standar */
+.text-paragraph {
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.text-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* Garis pembatas di tengah (Kolom Kanan) */
+.split-right {
+  border-left: 1px solid var(--border-soft);
+  padding-left: 2rem;
+}
+
+/* Item daftar metodologi (1, 2, 3) */
+.method-item {
+  margin-bottom: 1.5rem;
+}
+.method-item:last-child {
+  margin-bottom: 0;
+}
+.method-title {
+  color: #fff;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+.method-desc {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Layout header yang rata tengah (Mekanisme Analisis) */
+.section-header-center {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Icon dan Judul di dalam Feature List */
+.f-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+.f-heading {
+  color: #fff;
+  font-weight: bold;
+  font-family: 'Orbitron', sans-serif;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
