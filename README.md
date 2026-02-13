@@ -43,16 +43,16 @@ Sistem ini berfungsi sebagai alat bantu *Self-Assessment* otomatis untuk menguku
 
 ## 💻 Tech Stack (Spesifikasi Teknis)
 
-Sistem ini dibangun sebagai **Static Web Application** tanpa dependensi *backend* yang berat, mematuhi prinsip kedaulatan data dan efisiensi *deployment*[cite: 1363, 1364].
+Sistem ini dibangun sebagai **Static Web Application** tanpa dependensi *backend* yang berat, mematuhi prinsip kedaulatan data dan efisiensi *deployment*.
 
 | Komponen | Teknologi | Keterangan |
 | :--- | :--- | :--- |
 | **Frontend** | HTML5 Semantic | Membangun struktur konten dan formulir input 17 parameter. |
-| **Styling** | CSS3 Custom Properties | Manajemen tema warna *High-Contrast Dark Mode* & *Glassmorphism* tanpa framework eksternal[cite: 1513]. |
-| **Visualisasi** | CSS Grid & Flexbox | Merender Matriks Risiko 5x5 interaktif dan *layout* responsif[cite: 1495, 1513]. |
-| **Logic** | Vanilla JavaScript (ES6+) | Bahasa pemrograman utama untuk logika *Risk Engine* dan *Rule Base*[cite: 1495, 1513]. |
-| **Storage** | LocalStorage API | Utilitas *client-side* untuk menyimpan sesi riwayat yang diobfuskasi[cite: 1482]. |
-| **Tipografi** | Google Fonts | Menggunakan *font* bergaya teknikal: Orbitron dan Rajdhani[cite: 1513]. |
+| **Styling** | CSS3 Custom Properties | Manajemen tema warna *High-Contrast Dark Mode* & *Glassmorphism* tanpa framework eksternal. |
+| **Visualisasi** | CSS Grid & Flexbox | Merender Matriks Risiko 5x5 interaktif dan *layout* responsif. |
+| **Logic** | Vanilla JavaScript (ES6+) | Bahasa pemrograman utama untuk logika *Risk Engine* dan *Rule Base*. |
+| **Storage** | LocalStorage API | Utilitas *client-side* untuk menyimpan sesi riwayat yang diobfuskasi. |
+| **Tipografi** | Google Fonts | Menggunakan *font* bergaya teknikal: Orbitron dan Rajdhani. |
 
 ---
 
@@ -61,14 +61,14 @@ Sistem ini dibangun sebagai **Static Web Application** tanpa dependensi *backend
 ```text
 PRISMA COKRO (Beta Gen 1,0)/
 └── project-root/
-    ├── index.html                 # Halaman Pendaratan (Landing Page) [cite: 1516]
-    ├── landing-style.css          # Styling khusus untuk Landing Page
-    └── privacy-risk-dashboard/    # Direktori Utama Dashboard Analisis
-        ├── dashboard.html         # Antarmuka utama dengan 17 parameter input [cite: 1516]
+    ├── index.html                    # Halaman Pendaratan (Landing Page)
+    ├── landing-style.css             # Styling khusus untuk Landing Page
+    └── privacy-risk-dashboard/       # Direktori Utama Dashboard Analisis
+        ├── dashboard.html            # Antarmuka utama dengan 17 parameter input
         ├── css/
-        │   └── dashboard-style.css# Styling komponen dashboard, form, dan matriks
+        │   └── dashboard-style.css   # Styling komponen dashboard, form, dan matriks
         └── js/
-            ├── app.js             # Pengendali DOM, interaksi UI, & LocalStorage [cite: 1516]
-            ├── riskEngine.js      # Modul utama algoritma kalkulasi skor risiko [cite: 1516]
-            ├── rules.js           # Basis aturan UU PDP 2022 & pemetaan NIST CSF [cite: 1516]
-            └── legalCheck.js      # Basis data statis (Registry OJK/PSE) & logika override [cite: 1516]
+            ├── app.js                # Pengendali DOM, interaksi UI, & LocalStorage
+            ├── riskEngine.js         # Modul utama algoritma kalkulasi skor risiko
+            ├── rules.js              # Basis aturan UU PDP 2022 & pemetaan NIST CSF
+            └── legalCheck.js         # Basis data statis (Registry OJK/PSE) & logika override
