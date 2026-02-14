@@ -32,202 +32,380 @@ const LEGAL_REGISTRIES = {
   }
 };
 
-//// 2. Registry data (contoh subset)
-
-// 2.1. Bank yang diawasi OJK (subset)
+// ============================================================================
+// 2.1. Bank yang diawasi OJK & Aplikasi Mobile Banking Resmi (Lengkap)
+// ============================================================================
 const REGISTRY_OJK_BANKS = [
-  // Bank BUMN
-  "BANK MANDIRI",
-  "BANK RAKYAT INDONESIA",
-  "BANK BRI",
-  "BANK NEGARA INDONESIA",
-  "BANK BNI",
-  "BANK TABUNGAN NEGARA",
-  "BANK BTN",
+  // --- BANK BUMN & APPS ---
+  "BANK MANDIRI", "LIVIN BY MANDIRI", "LIVIN", "LIVIN MANDIRI", "KOPRA",
+  "BANK RAKYAT INDONESIA", "BANK BRI", "BRIMO", "BRI MOBILE", "CERIA BRI",
+  "BANK NEGARA INDONESIA", "BANK BNI", "BNI MOBILE BANKING", "WONDR BY BNI", "WONDR",
+  "BANK TABUNGAN NEGARA", "BANK BTN", "BTN MOBILE", "BTN PROPERTI",
 
-  // Bank Swasta Nasional
-  "BANK CENTRAL ASIA",
-  "BANK BCA",
-  "BANK CIMB NIAGA",
-  "BANK DANAMON",
-  "BANK PERMATA",
-  "BANK MEGA",
-  "BANK BTPN",
-  "BANK OCBC NISP",
-  "BANK MAYBANK INDONESIA",
-  "BANK PANIN",
-  "BANK COMMONWEALTH",
-  "BANK HSBC INDONESIA",
-  "BANK UOB INDONESIA",
+  // --- BANK SWASTA & DIGITAL APPS ---
+  "BANK CENTRAL ASIA", "BANK BCA", "BCA MOBILE", "MYBCA", "KLIKBCA", "BLU BY BCA DIGITAL", "BLU BCA",
+  "BANK CIMB NIAGA", "OCTO MOBILE", "OCTO CLICKS", "OCTO PAY",
+  "BANK DANAMON", "D-BANK PRO", "DANAMON ONLINE",
+  "BANK PERMATA", "PERMATAMOBILE X", "PERMATA NET",
+  "BANK MAYBANK INDONESIA", "M2U ID", "M2U",
+  "BANK PANIN", "PANIN MOBILE", "PANIN DIRECT",
+  "BANK OCBC NISP", "OCBC INDONESIA", "ONE MOBILE", "NYALA OCBC",
+  "BANK UOB INDONESIA", "TMRW BY UOB", "TMRW", "UOB INFINITY",
+  "BANK DBS INDONESIA", "DIGIBANK BY DBS", "DIGIBANK",
+  "BANK BTPN", "JENIUS", "JENIUS BTPN", "SINAYA",
+  "BANK MEGA", "M-SMILE", "MEGA MOBILE",
+  "BANK SINARMAS", "SIMOBI PLUS",
+  "BANK BUKOPIN", "KB BUKOPIN", "KBSTAR", "WOKEE",
+  "BANK MAYAPADA", "MYONLINE",
+  "BANK ARTHA GRAHA", "AGI MOBILE",
+  "BANK MNC", "MOTIONBANK",
+  "BANK GANESHA", "BANGGA",
+  "BANK JAGO", "JAGO APP", "JAGO SYARIAH",
+  "BANK NEO COMMERCE", "BNC", "NEOBANK",
+  "ALLO BANK", "ALLO APP", "ALLO PRIME",
+  "SEABANK", "SEABANK INDONESIA",
+  "BANK RAYA", "RAYA APP",
+  "SUPERBANK", "BANK ALADIN SYARIAH", "ALADIN",
+  "BANK KROM", "KROM BANK",
+  "BANK AMAR", "TUNAIKU",
 
-  // Bank Syariah
-  "BANK SYARIAH INDONESIA",
-  "BANK MUAMALAT",
-  "BANK MEGA SYARIAH",
-  "BANK PANIN DUBAI SYARIAH",
-  "BANK BCA SYARIAH",
-  "BANK BNI SYARIAH",
-  "BANK BRI SYARIAH",
+  // --- BANK SYARIAH & APPS ---
+  "BANK SYARIAH INDONESIA", "BSI", "BSI MOBILE", "BSI NET",
+  "BANK MUAMALAT", "MUAMALAT DIN",
+  "BANK MEGA SYARIAH", "M-SYARIAH",
+  "BCA SYARIAH", "BCA SYARIAH MOBILE",
+  "BTPN SYARIAH", "TEPAT MOBILE",
+  "BANK ALADIN", 
+  "BANK VICTORIA SYARIAH",
+  "BANK JABAR BANTEN SYARIAH", "BJB SYARIAH",
 
-  // Bank Pembangunan Daerah (BPD)
-  "BANK DKI",
-  "BANK JABAR BANTEN",
-  "BANK JABAR",
-  "BANK BJB",
-  "BANK JATENG",
-  "BANK JATIM",
-  "BANK SUMUT",
-  "BANK NAGARI",
-  "BANK RIAU KEPRI",
-  "BANK SUMSEL BABEL",
-  "BANK LAMPUNG",
-  "BANK BENGKULU",
-  "BANK BPD DIY",
-  "BANK KALTIMTARA",
-  "BANK KALBAR",
-  "BANK KALSEL",
-  "BANK KALTENG",
-  "BANK NTB SYARIAH",
-  "BANK NTT",
+  // --- BANK PEMBANGUNAN DAERAH (BPD) & APPS ---
+  "BANK DKI", "JAKONE MOBILE", "JAKONE",
+  "BANK JABAR BANTEN", "BANK BJB", "BJB DIGI", "DIGI BY BJB",
+  "BANK JATENG", "BIMA MOBILE", "IBANK JATENG",
+  "BANK JATIM", "JCONNECT", "JCONNECT MOBILE",
+  "BANK BPD DIY", "BPD DIY MOBILE",
+  "BANK SUMUT", "SUMUT MOBILE",
+  "BANK NAGARI", "NAGARI MOBILE",
+  "BANK RIAU KEPRI SYARIAH", "BRKS MOBILE",
+  "BANK SUMSEL BABEL", "TELEMATI",
+  "BANK LAMPUNG", "LAMPUNG ONLINE",
+  "BANK JAMBI", "MOBILE BANK JAMBI",
+  "BANK BENGKULU", "BENGKULU MOBILE",
+  "BANK KALBAR", "KALBAR MOBILE",
+  "BANK KALSEL", "AKSEL BY BANK KALSEL",
+  "BANK KALTENG", "BETANG MOBILE",
+  "BANK KALTIMTARA", "DG BANK KALTIMTARA",
+  "BANK SULSELBAR", "SULSELBAR MOBILE",
+  "BANK SULUTGO", "SULUTGO MOBILE",
+  "BANK NTB SYARIAH", "NTB SYARIAH MOBILE",
+  "BANK BALI", "BPD BALI MOBILE",
+  "BANK NTT", "B PUNG MOBILE",
   "BANK MALUKU MALUT",
-  "BANK SULUTGO",
-  "BANK SULTENG",
-  "BANK SULTRA",
-  "BANK PAPUA"
+  "BANK PAPUA", "PAPUA MOBILE",
+  
+  // --- BANK GLOBAL DI INDONESIA ---
+  "CITIBANK", "CITI MOBILE",
+  "HSBC INDONESIA", "HSBC MOBILE",
+  "STANDARD CHARTERED", "SC MOBILE",
+  "BANK OF CHINA",
+  "ANZ INDONESIA",
+  "QNB INDONESIA", "QNB DOOET",
+  "SHINHAN BANK", "SOL INDONESIA"
 ];
 
-// 2.1b. E-wallet / uang elektronik (berizin BI/OJK – subset)
+// ============================================================================
+// 2.1b. E-Wallet, Paylater & Uang Elektronik (Berizin BI/OJK)
+// ============================================================================
 const REGISTRY_EWALLETS = [
-  "DANA",
-  "OVO",
-  "GOPAY",
-  "GO-PAY",
-  "SHOPEEPAY",
-  "SHOPEE PAY",
-  "LINKAJA",
-  "LINK AJA",
-  "ISAKU",
-  "I.SAKU",
-  "SAKUKU",
-  "BRIMO",
-  "JAGO",
-  "JENIUS",
-  "MOTIONPAY",
-  "MOTION PAY",
-  "DOKU",
-  "AYOPOP",
-  "OVO CASH"
+  // E-Wallet Besar
+  "GOPAY", "GO-PAY", "GOPAY LATER",
+  "OVO", "OVO CASH", "OVO POINTS",
+  "DANA", "DANA DOMPET DIGITAL",
+  "SHOPEEPAY", "SHOPEE PAY", "SPAYLATER",
+  "LINKAJA", "LINK AJA", "LINKAJA SYARIAH",
+  
+  // E-Wallet Ekosistem/Retail
+  "ISAKU", "I.SAKU", // Indomaret
+  "ASTRAPAY", // Astra
+  "DOKU", "DOKU WALLET",
+  "SAKUKU", // BCA
+  "JAKONE PAY",
+  "PAYTREN",
+  "SPEEDCASH",
+  "KASPRO",
+  "SPIN PAY",
+  "NOBU E-PAY",
+  "YAP!", // BNI
+  "QRIS", // General term often used by users
+
+  // Paylater & Financing (Non-Bank)
+  "KREDIVO", "KREDIVO PAYLATER",
+  "AKULAKU", "AKULAKU PAY",
+  "INDODANA", "INDODANA PAYLATER",
+  "TRAVELOKA PAYLATER",
+  "GOPAY LATER",
+  "SHOPEE PAYLATER",
+  "ATOM",
+  "HOME CREDIT", "HOME CREDIT INDONESIA",
+  "AEON CREDIT",
+  "ADIRA FINANCE", "ADIRAKU"
 ];
 
-// Kombinasi: bank + e-wallet → sama-sama diperlakukan sebagai entitas
-// yang diawasi otoritas keuangan (BI/OJK).
+// Gabungan untuk pengecekan "Institusi Keuangan Resmi"
 const REGISTRY_OJK_BANKS_AND_EWALLETS = REGISTRY_OJK_BANKS.concat(REGISTRY_EWALLETS);
 
-// 2.2. PSE (e-commerce / layanan digital) contoh yang terdaftar Komdigi PSE
+// ============================================================================
+// 2.2. PSE (Layanan Digital Terdaftar Komdigi/Kominfo)
+// ============================================================================
 const REGISTRY_PSE_SERVICES = [
-  "TOKOPEDIA",
-  "SHOPEE",
-  "LAZADA",
-  "BUKALAPAK",
-  "BLIBLI",
+  // --- MARKETPLACE & E-COMMERCE ---
+  "TOKOPEDIA", "SHOP TOKOPEDIA", "MITRA TOKOPEDIA",
+  "SHOPEE", "SHOPEE INDONESIA", "MITRA SHOPEE",
+  "LAZADA", "LAZADA INDONESIA",
+  "BUKALAPAK", "MITRA BUKALAPAK",
+  "BLIBLI", "BLIBLI.COM",
   "TIKTOK SHOP",
-  "TRAVELOKA",
-  "PEGI-PEGI",
-  "AIRASIA",
-  "CITILINK",
+  "ZALORA",
+  "JD.ID", // Historical context
+  "BHINNEKA",
+  "SOCIOLLA",
+  "RALALI",
+  "JAKMALL",
+  "MATAHARI.COM",
+  "KLIKINDOMARET",
   "ALFAGIFT",
-  "INDOMARET POIN",
-  "GOJEK",
-  "GRAB",
-  "MAXIM",
+  "ASTRO",
+  "SAYURBOX",
+
+  // --- TRAVEL & TRANSPORTASI ---
+  "TRAVELOKA",
+  "TIKET.COM",
+  "AGODA",
+  "BOOKING.COM",
+  "AIRBNB",
+  "PEGIPEGI", // Historical
+  "MISTER ALADIN",
+  "GOJEK", "GOCAR", "GORIDE", "GOFOOD",
+  "GRAB", "GRAB INDONESIA", "GRABFOOD",
+  "MAXIM", "MAXIM DRIVER",
+  "INDRIVE",
+  "BLUEBIRD", "MYBLUEBIRD",
+  "KAI ACCESS", "ACCESS BY KAI",
+  "FERIZY",
+  "MRT JAKARTA",
+  "TRAJEKLINE",
+
+  // --- HIBURAN, STREAMING & GAME ---
+  "NETFLIX",
+  "DISNEY+ HOTSTAR", "DISNEY PLUS",
+  "VIDIO", "VIDIO.COM",
+  "VIU",
+  "SPOTIFY",
+  "YOUTUBE", "YOUTUBE MUSIC",
+  "TIKTOK",
+  "INSTAGRAM",
+  "FACEBOOK",
+  "WHATSAPP", "WHATSAPP BUSINESS",
+  "X", "TWITTER",
+  "TELEGRAM",
+  "LINE", "LINE TODAY",
+  "DISCORD",
+  "ROBLOX",
+  "MOBILE LEGENDS", "MLBB",
+  "FREE FIRE", "GARENA FREE FIRE",
+  "PUBG MOBILE",
+  "GENSHIN IMPACT",
+  "VALORANT",
+  "STEAM",
+  "EPIC GAMES STORE",
+  "PLAYSTATION STORE",
+  "NINTENDO ESHOP",
+  "CANDY CRUSH",
+  "CLASH OF CLANS",
+
+  // --- PRODUKTIVITAS & PENDIDIKAN ---
+  "GOOGLE", "GMAIL", "GOOGLE DRIVE", "GOOGLE DOCS", "GOOGLE CLASSROOM",
+  "ZOOM", "ZOOM MEETING",
+  "MICROSOFT", "MICROSOFT 365", "TEAMS",
+  "CANVA",
+  "NOTION",
+  "SLACK",
+  "TRELLO",
+  "RUANGGURU",
+  "ZENIUS",
+  "QUIPPER",
+  "UDEMY",
+  "COURSERA",
+  "LINKEDIN",
+  "GLINTS",
+  "JOBSTREET",
+  "KITA LULUS",
+
+  // --- LAYANAN PUBLIK & UTILITAS ---
+  "PEDULILINDUNGI", "SATUSEHAT",
+  "MJKN", "MOBILE JKN",
+  "PLN MOBILE",
+  "MYPERTAMINA",
   "MYTELKOMSEL",
+  "MYIM3",
+  "BIMA+", "TRI",
+  "AXISNET",
   "BY.U",
   "INDIHOME",
-  "PLN MOBILE",
-  "PDAM ONLINE",
-  "BCA MOBILE",
-  "BRIMO",
-  "LIVIN",
-  "JENIUS",
-  "OVO",
-  "DANA",
-  "LINKAJA",
-  "SHOPEE PAY",
-  "GO-PAY",
-  "PAYFREN",
-  "GOOGLE",
-  "YOUTUBE",
-  "FACEBOOK",
-  "INSTAGRAM",
-  "WHATSAPP",
-  "TWITTER",
-  "X",
-  "TIKTOK",
-  "NETFLIX",
-  "SPOTIFY",
-  "DISNEY PLUS",
-  "AMAZON",
-  "MICROSOFT",
-  "STEAM",
-  "EPIC GAMES",
-  "ROBLOX",
-  "MOBILE LEGENDS",
-  "GENSHIN IMPACT",
-  "FREE FIRE",
-  "PUBG MOBILE"
+  "FIRST MEDIA",
+  "BIZNET",
+  "DJP ONLINE", "PAJAK.GO.ID",
+  "OSS", "OSS RBA",
+  "SIPP", "SIPP BPJS"
 ];
 
-// 2.3. Anggota AFPI (contoh fintech lending)
+// ============================================================================
+// 2.3. Anggota AFPI (Fintech Lending / Pinjol Legal)
+// ============================================================================
 const REGISTRY_AFPI_MEMBERS = [
-  "AKULAKU",
+  // Top Tier (Paling Sering Dipakai)
   "KREDIVO",
-  "HOME CREDIT",
-  "INDODANA",
-  "MODALKU",
-  "AMAR BANK TUNAIKU",
-  "RUPIAH CEPAT",
+  "AKULAKU",
+  "EASYCASH",
   "ADAKAMI",
+  "RUPIAH CEPAT",
   "UANGME",
-  "JULO",
-  "DANA SYARIAH",
-  "PINJAM YUK",
-  "PINJAMIN",
-  "PINJAMAN GO",
-  "KTA KILAT",
-  "KLIK ACC",
-  "KREDITPRO",
-  "CROWDE",
+  "KREDIT PINTAR",
+  "INDODANA",
+  "MUCASH",
+  "MODALKU",
   "INVESTREE",
-  "AMARTEK",
+  "AMARTHA",
   "KOINWORKS",
   "ASETKU",
-  "LENDID",
-  "PRISMA FINTECH PAYLATER"  // punyamu
+  
+  // Daftar Lengkap Berizin OJK (Update 2024/2025)
+  "DANAMAS",
+  "AKSELERAN",
+  "POHON DANA",
+  "MEKAR",
+  "ESTA KAPITAL",
+  "KREDITPRO",
+  "FINTAG",
+  "RUPIAH CEPAT",
+  "CROWDO",
+  "JULO",
+  "PINJAM WINWIN",
+  "DANA RUPIAH",
+  "TARALITE",
+  "PINJAM MODAL",
+  "ALAMI",
+  "AUNTING",
+  "DANA SYARIAH",
+  "BATUMBU",
+  "CROWDE",
+  "KLIKUMKM",
+  "PINJAM GAMPANG",
+  "CICIL",
+  "LUMBUNG DANA",
+  "360 KREDI",
+  "DHANAPALA",
+  "KREDINESIA",
+  "PINJAM YUK",
+  "FINPLUS",
+  "UANGME",
+  "PINJAMDUIT",
+  "DANAFIX",
+  "INDODANA",
+  "AWANTUNAI",
+  "DANAKINI",
+  "SINGA",
+  "DANAMERDEKA",
+  "EASYCASH",
+  "PINJAMAN GO",
+  "KREDITO",
+  "CROWDE",
+  "ALAMI",
+  "SAMIR",
+  "WATAS",
+  "KAYA.ID",
+  "KAPITAL BOOST",
+  "PAPITUPI SYARIAH",
+  "BANTUSAKU",
+  "DANABIJAK",
+  "DANAIN",
+  "ADA PUNDI",
+  "LENTERA DANA NUSANTARA",
+  "MODAL NASIONAL",
+  "SOLUSIKU",
+  "CAIRIN",
+  "TRUSTIQ",
+  "KLIKCARI",
+  "ADAMODAL",
+  "KOMUNAL",
+  "RESTOCK.ID",
+  "RINGAN",
+  "AVANTEE",
+  "GRADANA",
+  "DANACITA",
+  "IKI MODAL",
+  "IVOJI",
+  "INDOSAKU",
+  "JEMBATAN EMAS",
+  "EDUFUND",
+  "GANDENGTANGAN",
+  "PAPITUPI",
+  "FINMAS", // Historical check
+  "KTA KILAT"
 ];
 
-// 2.4. Penyedia / standar biometrik internasional (contoh)
+// ============================================================================
+// 2.4. Penyedia / Standar Biometrik & Identitas Internasional (Vendor)
+// ============================================================================
 const REGISTRY_INTL_BIOMETRIC = [
-  "ID.ME",
-  "ONFIDO",
-  "JUMIO",
-  "IPROOV",
-  "MICROSOFT AZURE FACE API",
-  "AMAZON REKOGNITION",
-  "AWS REKOGNITION",
-  "FACE++",
-  "NEC BIOMETRICS",
-  "CLEAR SECURE",
-  "VERIFF",
-  "YOTI",
-  "ID R&D",
-  "THALES BIOMETRICS",
-  "DAON",
-  "ZKTECO",
-  "SECUREMETRIC",
-  "GLOBAL VOICE ID SERVICE",
-  "PRISMA VERIFY ID" // punyamu
-];
+  // Raksasa Teknologi (Provider)
+  "APPLE FACE ID", "FACE ID", "TOUCH ID",
+  "ANDROID BIOMETRIC", "GOOGLE BIOMETRIC API",
+  "WINDOWS HELLO", "MICROSOFT FACE API",
+  "AMAZON REKOGNITION", "AWS REKOGNITION",
+  "IBM WATSON VISUAL RECOGNITION",
+  "SAMSUNG PASS",
 
+  // Vendor Verifikasi Identitas (Global & Lokal)
+  "VIDA", "VIDA DIGITAL IDENTITY", // Lokal Official
+  "PRIVY", "PRIVYID", // Lokal Official
+  "TILAKA", // Lokal Official
+  "PERURI", "PERURI DIGITAL", // BUMN
+  "ASLI RI", "ASLI.RI", // Lokal
+  "TEGUH", // Lokal
+  "DIGISIGN", // Lokal
+  "XENIDENTITY", // Xendit
+  "VERIHUBS", // Lokal
+
+  // Vendor Global
+  "JUMIO",
+  "ONFIDO",
+  "THALES GROUP", "THALES GEMALTO",
+  "IDEMIA",
+  "NEC BIOMETRICS", "NEC",
+  "HID GLOBAL",
+  "DERMALOG",
+  "AWARE INC",
+  "ID R&D",
+  "DAON",
+  "BIOKEY",
+  "FINGERPRINTJS",
+  "AUTH0", "OKTA",
+  "SUMSUB",
+  "TRULIOO",
+  "SOCURE",
+  "VERIFF",
+  "INCODE",
+  "MATI",
+  "ALICE BIOMETRICS",
+  "FACEPHI",
+  "INNOVATRICS",
+  "ID.ME",
+  "CLEAR", "CLEAR SECURE",
+  "YOTI",
+  "IPROOV"
+];
 //// 3. Util pencarian nama
 
 function legalNormalizeName(name) {
