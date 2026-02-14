@@ -137,27 +137,91 @@ section {
   margin-bottom: 1rem; opacity: 0;
   animation: fadeInDown 2s ease forwards;
 }
+/* ========================================= */
+/* HERO TITLE & ANIMATION FIX                */
+/* ========================================= */
+
 .hero-title {
   font-family: "Orbitron", sans-serif;
-  font-size: clamp(3rem, 6vw, 4.5rem);
-  line-height: 1.1; margin-bottom: 1rem; opacity: 0;
-  animation: focus-in-contract 1.2s cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.3s both;
-}
-.hero-title .accent {
-  background: linear-gradient(90deg, #22d3ee, #f97316, #22d3ee);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: textShine 3s linear infinite;
-}
-.hero-text {
-  font-size: 1.1rem; line-height: 1.6; color: var(--text-muted);
-  margin-bottom: 2rem; max-width: 650px;
-  margin-left: auto; margin-right: auto;
-  opacity: 0; animation: fadeInUp 1s ease 0.8s forwards;
+  /* Menggunakan clamp agar responsif tapi tetap besar */
+  font-size: clamp(2.5rem, 8vw, 4.5rem); 
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  
+  /* Hapus opacity: 0 disini, kita atur di keyframes agar tidak flickering */
+  animation: titleReveal 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
+/* Bagian "COKRO" dengan Gradasi Bergerak */
+.hero-title .accent {
+  /* Gradasi: Cyan -> Orange -> Cyan */
+  background: linear-gradient(to right, #22d3ee 0%, #f97316 50%, #22d3ee 100%);
+  background-size: 200% auto;
+  
+  /* Properti Wajib untuk Teks Gradasi */
+  color: #f97316; /* Fallback color jika browser jadul */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  /* Animasi Kilau Terus Menerus */
+  animation: shineFlow 3s linear infinite;
+  
+  display: inline-block; /* Penting agar transformasi stabil */
+}
+
+.hero-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  max-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+  
+  /* Mulai tersembunyi */
+  opacity: 0;
+  /* Muncul sedikit setelah Judul selesai (delay 0.5s) */
+  animation: fadeInUp 0.8s ease-out 0.5s forwards;
+}
+
+/* ========================================= */
+/* DEFINISI KEYFRAMES (ANIMASI)              */
+/* ========================================= */
+
+/* 1. Animasi Judul Muncul (Lebih Smooth & Stabil) */
+@keyframes titleReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95); /* Dari bawah & agak kecil */
+    filter: blur(10px); /* Blur sedikit saja biar gak berat */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* 2. Animasi Gradasi Mengalir (Shine) */
+@keyframes shineFlow {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* 3. Animasi Teks Deskripsi Muncul */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 /* BUTTON */
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
@@ -341,3 +405,4 @@ footer {
   font-size: 1.1rem;
   line-height: 1.4;
 }
+
