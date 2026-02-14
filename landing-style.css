@@ -222,6 +222,7 @@ section {
     transform: translateY(0);
   }
 }
+
 /* BUTTON */
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
@@ -405,4 +406,3 @@ footer {
   font-size: 1.1rem;
   line-height: 1.4;
 }
-
