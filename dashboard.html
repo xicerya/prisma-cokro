@@ -25,7 +25,7 @@
     <section class="card">
       <h2>Input Parameter Pemrosesan Data</h2>
       <p class="subtitle">
-        Isi parameter di bawah ini untuk menghitung risiko privasi dan mengevaluasi kepatuhan terhadap UU PDP 2022 &amp; NIST CSF 2.0.
+        Isi Parameter di Bawah ini untuk Menghitung Risiko Privasi &amp; Mengevaluasi Kepatuhan terhadap UU PDP 2022 &amp; NIST CSF 2.0.
       </p>
 
       <form id="risk-form" class="form-grid">
@@ -34,44 +34,43 @@
           <h3 class="form-section-title">1. Informasi Skenario &amp; Platform</h3>
 
           <div class="form-group">
-            <label for="scenarioName">Nama skenario</label>
+            <label for="scenarioName">Nama Skenario</label>
             <input
               type="text"
               id="scenarioName"
-              placeholder="Contoh: Verifikasi identitas pengguna baru"
+              placeholder="Contoh: Verifikasi Identitas Pengguna Baru"
             />
             <p class="field-hint">
-              Beri nama singkat yang menggambarkan proses pemrosesan data yang sedang dianalisis.
+              Beri Nama Singkat untuk Skenario Pemrosesan Data yang Sedang dianalisis.
             </p>
           </div>
 
           <div class="form-group">
-            <label for="platformType">Jenis platform / layanan</label>
+            <label for="platformType">Jenis Platform/Layanan</label>
             <select id="platformType" required>
-              <option value="">-- Pilih jenis platform --</option>
-              <option value="bank">Bank / Lembaga Keuangan</option>
-              <option value="ecommerce">E-commerce / Marketplace</option>
+              <option value="">-- Pilih Jenis Platform --</option>
+              <option value="bank">Bank/Lembaga Keuangan</option>
+              <option value="ecommerce">E-commerce/Marketplace</option>
               <option value="fintech">Fintech</option>
-              <option value="website">Website biasa</option>
-              <option value="game">Game / Game platform</option>
-              <option value="biometric">Layanan verifikasi biometrik</option>
+              <option value="website">Website</option>
+              <option value="game">Game Platform</option>
+              <option value="biometric">Layanan Verifikasi Biometrik</option>
               <option value="lainnya">Lainnya</option>
             </select>
             <p class="field-hint">
-              Digunakan untuk analisis legalitas (OJK, Komdigi PSE, AFPI, Registry Biometrik, dll).
+              Digunakan untuk Analisis Legalitas.
             </p>
           </div>
 
           <div class="form-group">
-            <label for="serviceName">Nama layanan / aplikasi (terdaftar)</label>
+            <label for="serviceName">Nama Layanan / Aplikasi</label>
             <input
               type="text"
               id="serviceName"
-              placeholder="Contoh: DANA, OVO, GoPay, ShopeePay, Mandiri, BCA, Tokopedia, Roblox"
+              placeholder="Contoh: Wondr By BNI, ShopeePay, Mandiri, Muamalat DIN, Roblox"
             />
             <p class="field-hint">
-              Ketik nama resmi layanan sebagaimana tertera di daftar OJK/Komdigi PSE/AFPI/Vendor Biometrik.
-              Sistem akan menormalisasi huruf.
+              Masukkan Nama Resmi Layanan. Sistem akan Menyesuaikan Format Huruf Secara Otomatis.
             </p>
           </div>
         </div>
@@ -80,21 +79,21 @@
           <h3 class="form-section-title">2. Data Pribadi yang Diproses</h3>
 
           <div class="form-group">
-            <label for="dataType">Jenis data pribadi utama</label>
+            <label for="dataType">Jenis Data Pribadi Utama</label>
             <select id="dataType" required>
               <option value="">-- Pilih jenis data --</option>
               <option value="identitas">Identitas (KTP/SIM/NIK)</option>
-              <option value="biometrik">Biometrik (wajah, suara)</option>
-              <option value="umum">Data umum (nama, email)</option>
-              <option value="keuangan">Data finansial</option>
-              <option value="lokasi">Data lokasi (GPS)</option>
-              <option value="perilaku">Data perilaku pengguna</option>
+              <option value="biometrik">Biometrik (Wajah, Suara)</option>
+              <option value="umum">Data Umum (Nama, E-mail)</option>
+              <option value="keuangan">Data Finansial</option>
+              <option value="lokasi">Data Lokasi (GPS)</option>
+              <option value="perilaku">Data Perilaku Pengguna</option>
               <option value="lainnya">Lainnya</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label>Jenis data spesifik yang dikumpulkan (untuk analisis legalitas)</label>
+            <label>Jenis Data Spesifik yang Dikumpulkan (Untuk Analisis Legalitas)</label>
 
             <div class="inline-options checkbox-group">
               <div>
@@ -139,41 +138,41 @@
           <h3 class="form-section-title">3. Aktivitas &amp; Tujuan Pemrosesan</h3>
 
           <div class="form-group">
-            <label for="processingActivity">Aktivitas pemrosesan utama</label>
+            <label for="processingActivity">Aktivitas Pemrosesan Utama</label>
             <select id="processingActivity" required>
-              <option value="">-- Pilih aktivitas --</option>
-              <option value="collection">Pengumpulan data</option>
-              <option value="storage">Penyimpanan data</option>
-              <option value="verification">Verifikasi identitas</option>
-              <option value="analysis">Analisis / pemantauan aktivitas</option>
-              <option value="sharing">Berbagi ke pihak lain</option>
-              <option value="transmission">Pengiriman data</option>
-              <option value="deletion">Penghapusan / pemusnahan data</option>
+              <option value="">-- Pilih Aktivitas --</option>
+              <option value="collection">Pengumpulan Data</option>
+              <option value="storage">Penyimpanan Data</option>
+              <option value="verification">Verifikasi Identitas</option>
+              <option value="analysis">Analisis/Pemantauan Aktivitas</option>
+              <option value="sharing">Berbagi ke Pihak Lain</option>
+              <option value="transmission">Pengiriman Data</option>
+              <option value="deletion">Penghapusan/Pemusnahan Data</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="processingPurpose">Tujuan utama pemrosesan data</label>
+            <label for="processingPurpose">Tujuan Utama Pemrosesan Data</label>
             <select id="processingPurpose" required>
-              <option value="">-- Pilih tujuan utama --</option>
-              <option value="verifikasi_identitas">Verifikasi identitas / umur pengguna</option>
+              <option value="">-- Pilih Tujuan Utama --</option>
+              <option value="verifikasi_identitas">Verifikasi Identitas/Umur Pengguna</option>
               <option value="penyediaan_layanan">
-                Menyediakan layanan inti (misalnya akses fitur aplikasi)
+                Menyediakan Layanan Inti (misalnya akses fitur aplikasi)
               </option>
               <option value="keamanan_pencegahan_penipuan">
-                Keamanan &amp; pencegahan penipuan
+                Keamanan &amp; Pencegahan Penipuan
               </option>
               <option value="penagihan_pembayaran">
-                Penagihan &amp; pengelolaan pembayaran
+                Penagihan &amp; Pengelolaan Pembayaran
               </option>
               <option value="personalisasi">
-                Personalisasi tampilan / rekomendasi konten
+                Personalisasi Tampilan/Rekomendasi Konten
               </option>
               <option value="pemasaran">
-                Pemasaran / promosi (email, notifikasi, iklan)
+                Pemasaran/Promosi (E-mail, Notifikasi, Iklan)
               </option>
               <option value="analitik">
-                Analitik &amp; statistik penggunaan
+                Analitik &amp; Statistik Penggunaan
               </option>
             </select>
           </div>
@@ -183,7 +182,7 @@
           <h3 class="form-section-title">4. Legalitas &amp; Tata Kelola</h3>
           
           <div class="form-group">
-            <label>Apakah melibatkan pihak ketiga (vendor/cloud/mitra)?</label>
+            <label>Apakah Melibatkan Pihak Ketiga (Vendor/Cloud/Mitra)?</label>
             
             <div class="inline-options checkbox-group">
               <div>
@@ -199,20 +198,20 @@
           </div>
 
           <div class="form-group">
-            <label>Apakah tujuan pengumpulan data dijelaskan dengan jelas ke pengguna?</label>
+            <label>Apakah Tujuan Pengumpulan Data dijelaskan dengan Jelas ke Pengguna?</label>
             
             <div class="inline-options checkbox-group">
               <div>
                 <input type="radio" id="purpose-yes" name="purposeSpecified" value="yes" class="hidden-input" />
                 <label for="purpose-yes" class="btn-option">
-                  Ya, dijelaskan di awal (Privacy Policy)
+                  Ya, dijelaskan di Awal (Privacy Policy)
                 </label>
               </div>
 
               <div>
                 <input type="radio" id="purpose-no" name="purposeSpecified" value="no" class="hidden-input" />
                 <label for="purpose-no" class="btn-option">
-                  Tidak dijelaskan secara jelas
+                  Tidak dijelaskan Secara Jelas
                 </label>
               </div>
             </div>
@@ -223,119 +222,119 @@
           <h3 class="form-section-title">5. Pengamanan Teknis &amp; Organisasi</h3>
 
           <div class="form-group">
-            <label for="encryption">Cara melindungi data dengan enkripsi</label>
+            <label for="encryption">Cara melindungi Data dengan Enkripsi</label>
             <select id="encryption" required>
-              <option value="">-- Pilih kondisi --</option>
-              <option value="none">Tidak dikunci (Polosan / Teks Biasa)</option>
+              <option value="">-- Pilih Kondisi --</option>
+              <option value="none">Tidak dikunci (Polosan/Teks Biasa)</option>
               <option value="in_transit">
-                Dikunci saat dikirim (ada gembok/HTTPS)
+                Dikunci Saat dikirim (Ada Gembok/HTTPS)
               </option>
               <option value="at_rest">
-                Dikunci saat disimpan di server (Database diacak)
+                Dikunci Saat disimpan di Server (Database diacak)
               </option>
               <option value="both">
-               Dikunci super ketat (saat dikirim &amp; disimpan)
+               Dikunci Super Ketat (saat dikirim &amp; disimpan)
               </option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="accessControl">Kontrol akses ke data</label>
+            <label for="accessControl">Kontrol Akses ke Data</label>
             <select id="accessControl" required>
-              <option value="">-- Pilih jenis akses --</option>
-              <option value="none">Tidak ada kontrol akses formal</option>
-              <option value="basic">Dasar (hanya username/password)</option>
+              <option value="">-- Pilih Jenis Akses --</option>
+              <option value="none">Tidak Ada Kontrol Akses Formal</option>
+              <option value="basic">Dasar (Hanya Username/Password)</option>
               <option value="role_based">
-                Berbasis peran (hanya orang tertentu yang boleh akses)
+                Berbasis Peran (Hanya Orang Tertentu yang Boleh Mengakses)
               </option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="authMethod">Metode login / autentikasi pengguna</label>
+            <label for="authMethod">Metode Login/Autentikasi Pengguna</label>
             <select id="authMethod" required>
-              <option value="">-- Pilih metode --</option>
-              <option value="none">Tidak ada autentikasi khusus</option>
-              <option value="password_only">Hanya pakai Password/PIN biasa</option>
+              <option value="">-- Pilih Metode --</option>
+              <option value="none">Tidak Ada Autentikasi Khusus</option>
+              <option value="password_only">Hanya Pakai Password/PIN Biasa</option>
               <option value="password_mfa">
                 Password + Kode OTP (SMS/WA/App)
               </option>
               <option value="sso">
-                Login lewat pihak ketiga (SSO)
+                Login Lewat Pihak Ketiga (SSO)
               </option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="consentType">Cara meminta persetujuan (consent) pengguna</label>
+            <label for="consentType">Cara Meminta Persetujuan (Consent) Pengguna</label>
             <select id="consentType" required>
-              <option value="">-- Pilih cara consent --</option>
-              <option value="none">Tidak ditanya persetujuan sama sekali</option>
+              <option value="">-- Pilih Cara Consent --</option>
+              <option value="none">Tidak ditanya Persetujuan Sama Sekali</option>
               <option value="implicit">
-                Langsung setuju otomatis saat daftar
+                Langsung Setuju Otomatis Saat Daftar
               </option>
               <option value="explicit">
-                Jelas &amp; spesifik (checkbox / tombol setuju yang terpisah)
+                Jelas &amp; Spesifik (Ada Checkbox/Tombol Setuju)
               </option>
             </select>
           </div>
 
           <div class="form-group">
             <label for="privacyPolicy">
-              Apakah ada kebijakan privasi / aturan tertulis tentang pengelolaan data?
+              Apakah Ada Kebijakan Privasi/Aturan Tertulis Tentang Pengelolaan Data?
             </label>
             <select id="privacyPolicy" required>
-              <option value="">-- Pilih kondisi --</option>
-              <option value="none">Tidak ada dokumen kebijakan privasi</option>
-              <option value="informal">Ada, tapi belum rapi / belum konsisten</option>
+              <option value="">-- Pilih Kondisi --</option>
+              <option value="none">Tidak Ada Dokumen Kebijakan Privasi</option>
+              <option value="informal">Ada, tapi Belum Rapi/Belum Konsisten</option>
               <option value="formal">
-                Ada, tertulis dan sudah disosialisasikan
+                Ada, Tertulis &amp; Sudah disosialisasikan
               </option>
             </select>
           </div>
 
           <div class="form-group">
             <label for="incidentResponsePlan">
-              Jika terjadi kebocoran data, apakah ada rencana apa yang harus dilakukan?
+              Jika Terjadi Kebocoran Data, Apakah Ada Rencana Apa yang Harus Dilakukan?
             </label>
             <select id="incidentResponsePlan" required>
-              <option value="">-- Pilih kondisi --</option>
-              <option value="not_available">Tidak ada rencana tertulis</option>
-              <option value="documented">Ada dokumen rencana, tapi jarang diuji</option>
+              <option value="">-- Pilih Kondisi --</option>
+              <option value="not_available">Tidak Ada Rencana Tertulis</option>
+              <option value="documented">Ada Dokumen Rencana, tapi Jarang Diuji</option>
               <option value="tested_regularly">
-                Ada rencana dan diuji secara berkala
+                Ada Rencana &amp; diuji Secara Berkala
               </option>
             </select>
           </div>
 
           <div class="form-group">
             <label for="detectSystem">
-              Apakah ada sistem untuk memantau dan mendeteksi insiden keamanan?
+              Apakah Ada Sistem untuk Memantau dan Mendeteksi Insiden Keamanan?
             </label>
             <select id="detectSystem" required>
-              <option value="">-- Pilih kondisi --</option>
-              <option value="none">Tidak ada pemantauan khusus</option>
+              <option value="">-- Pilih Kondisi --</option>
+              <option value="none">Tidak Ada Pemantauan Khusus</option>
               <option value="basic">
-                Ada log dasar (misalnya log akses), tapi jarang dicek
+                Ada Log Dasar (misalnya Log Akses), tapi Jarang dicek
               </option>
               <option value="advanced">
-                Ada pemantauan rutin / alat khusus (SIEM, alert otomatis, dsb)
+                Ada Pemantauan Rutin/Alat Khusus (SIEM, alert otomatis, dsb)
               </option>
             </select>
           </div>
 
           <div class="form-group">
             <label for="backupPolicy">
-              Apakah ada backup dan rencana pemulihan data jika terjadi masalah?
+              Apakah Ada Backup dan Rencana Pemulihan Data Jika Terjadi Masalah?
             </label>
             <select id="backupPolicy" required>
-              <option value="">-- Pilih kondisi --</option>
-              <option value="none">Tidak ada backup</option>
+              <option value="">-- Pilih Kondisi --</option>
+              <option value="none">Tidak Ada Backup</option>
               <option value="backups">
-                Ada backup, tapi belum pernah diuji proses pemulihannya
+                Ada Backup, tapi Belum Pernah diuji Proses Pemulihannya
               </option>
               <option value="tested">
-                Ada backup dan proses pemulihan sudah pernah diuji
+                Ada Backup &amp; Proses Pemulihan Sudah Pernah diuji
               </option>
             </select>
           </div>
@@ -363,7 +362,7 @@
 
     <section id="history-panel" class="card" style="display: none; border: 1px dashed var(--accent);">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-        <h3 style="margin:0; font-size:1rem; color:var(--accent);">Riwayat Penilaian (Lokal)</h3>
+        <h3 style="margin:0; font-size:1rem; color:var(--accent);">Daftar Riwayat Penilaian</h3>
         <button type="button" id="btn-close-history" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">❌</button>
       </div>
       
@@ -381,7 +380,7 @@
       <article class="card" id="summary-card">
         <h2>Ringkasan Risiko</h2>
         <div id="summary-content" class="summary-content placeholder">
-          Isi parameter di atas kemudian klik <strong>Hitung Risiko</strong> untuk melihat hasil analisis.
+          Isi Parameter di Atas, Kemudian Klik <strong>Hitung Risiko</strong> untuk Melihat Hasil Analisis.
         </div>
       </article>
 
@@ -394,28 +393,28 @@
         </div>
         <div id="risk-matrix" class="risk-matrix"></div>
         <p class="matrix-caption">
-          Sumbu vertikal: Impact (1–5), sumbu horizontal: Likelihood (1–5). Kotak dengan highlight berwarna putih menunjukkan posisi risiko skenario saat ini.
+          Sumbu Vertikal: Impact (1–5), Sumbu Horizontal: Likelihood (1–5). Kotak dengan Highlight Berwarna Putih Menunjukkan Posisi Risiko Skenario Saat Ini.
         </p>
       </article>
 
       <article class="card">
         <h2>Evaluasi Kepatuhan UU PDP 2022</h2>
         <div id="pdp-results" class="table-wrapper placeholder">
-          Belum ada data. Jalankan analisis terlebih dahulu.
+          Belum Ada Data. Jalankan Analisis Terlebih Dahulu.
         </div>
       </article>
 
       <article class="card">
-        <h2>Pemetaan ke NIST Cybersecurity Framework 2.0</h2>
+        <h2>Pemetaan NIST Cybersecurity Framework 2.0</h2>
         <div id="nist-results" class="table-wrapper placeholder">
-          Belum ada data. Jalankan analisis terlebih dahulu.
+          elum Ada Data. Jalankan Analisis Terlebih Dahulu.
         </div>
       </article>
 
       <article class="card">
         <h2>Rekomendasi Otomatis</h2>
         <div id="recommendations" class="table-wrapper placeholder">
-          Belum ada rekomendasi. Jalankan analisis terlebih dahulu.
+          Belum Ada Rekomendasi. Jalankan Analisis Terlebih Dahulu.
         </div>
       </article>
     </section>
