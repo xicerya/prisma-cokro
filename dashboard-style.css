@@ -465,3 +465,26 @@ input:focus, select:focus, textarea:focus {
   color: var(--text-muted);
   text-align: right;
 }
+
+/* Fix untuk Tombol Kembali di Header */
+.app-header .btn-primary {
+  text-decoration: none; /* Hilangkan garis bawah */
+  display: inline-flex;  /* Pastikan bentuknya kotak tombol */
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;   /* Mencegah teks turun ke bawah di layar sempit */
+  font-weight: 600;
+  
+  /* Ukuran khusus header agar pas di HP */
+  padding: 0.5rem 1.2rem; 
+  font-size: 0.7rem;
+  min-height: auto; /* Reset min-height tombol aksi biasa */
+}
+
+/* Pastikan warna link tidak menimpa warna tombol */
+a.btn-primary, 
+a.btn-primary:visited, 
+a.btn-primary:hover, 
+a.btn-primary:active {
+  color: #020617 !important; /* Paksa warna teks jadi gelap (sesuai tema tombol primary) */
+}
