@@ -594,65 +594,56 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* ========================================= */
-/* LAYOUT TOMBOL AKSI (FIX RESPONSIF)        */
+/* GRID TOMBOL AKSI - PERBAIKAN LAPTOP & HP  */
 /* ========================================= */
 
 .form-actions-container {
-  /* 1. POSISI: Di tengah & Lebar mengikuti Form di atasnya */
   grid-column: 1 / -1;       
   width: 100%;               
-  max-width: 850px;          /* Sama dengan lebar .form-section */
-  margin: 0.5rem auto 0 auto;  /* Rata tengah */
-  box-sizing: border-box;    /* Pastikan padding tidak nambah lebar */
-  
-  /* 2. DEKORASI */
+  max-width: 850px;          
+  margin: 0.5rem auto 0 auto;  
+  box-sizing: border-box;    
   border-top: 1px solid rgba(148, 163, 184, 0.2);
   padding-top: 1.5rem;
 
-  /* 3. GRID SYSTEM (HP - DEFAULT) */
+  /* --- DEFAULT: TAMPILAN HP (MOBILE) --- */
   display: grid;
-  /* KUNCI 1: Paksa jadi 2 kolom sama rata */
+  /* Paksa jadi 2 kolom sama rata agar tidak meluap ke kanan */
   grid-template-columns: 1fr 1fr; 
-  gap: 0.75rem; /* Jarak antar tombol */
+  gap: 0.75rem; 
 }
 
-/* 4. STYLE TOMBOL (HP) */
+/* Style Tombol khusus untuk HP */
 .form-actions-container button {
-  width: 100%;             /* Lebar penuh di dalam sel grid */
-  height: 100%;            /* Tinggi penuh */
-  min-height: 50px;        /* Tinggi minimal biar enak dipencet */
-  
-  /* KUNCI 2: Izinkan teks turun baris (Wrap) & Rata Tengah */
-  white-space: normal !important; 
-  word-wrap: break-word;
-  text-align: center;
-  line-height: 1.1;        /* Jarak baris rapat */
-  
-  /* Flexbox untuk menengahkan teks secara vertikal & horizontal */
+  width: 100%;             
+  height: 100%;            
+  min-height: 50px;        
   display: flex;
   align-items: center;
   justify-content: center;
-  
-  /* KUNCI 3: Padding kecil di HP agar teks muat */
+  text-align: center;
+  white-space: normal !important; /* Izinkan teks turun baris di HP */
   padding: 0.5rem 0.2rem;  
-  
-  /* Bentuk kotak tumpul di HP (biar teks 2 baris tetap bagus) */
   border-radius: 12px;     
-  font-size: 0.75rem;      /* Ukuran font pas di HP */
+  font-size: 0.75rem;      
 }
 
-/* 5. TAMPILAN LAPTOP (Layar > 768px) */
-@media (min-width: 768px) {
+/* --- MEDIA QUERY: TAMPILAN LAPTOP (DESKTOP) --- */
+/* Gunakan min-width 992px agar lebih akurat mendeteksi layar besar */
+@media (min-width: 992px) {
   .form-actions-container {
-    /* Ubah jadi 4 kolom sejajar */
-    grid-template-columns: repeat(4, 1fr); 
+    /* Paksa jadi 4 KOLOM SEJAJAR (1 Baris) */
+    grid-template-columns: repeat(4, 1fr) !important; 
     gap: 1rem;
+    margin-top: 1.5rem;
   }
   
   .form-actions-container button {
-    white-space: nowrap !important; /* Di laptop dilarang turun baris */
-    padding: 0.75rem 1rem;          /* Padding lebih lega */
-    border-radius: 99px;            /* Kembali ke bentuk Pill/Lonjong */
+    /* Di Laptop teks dilarang turun baris agar terlihat elegan */
+    white-space: nowrap !important; 
+    padding: 0.75rem 1rem;          
+    border-radius: 99px; /* Kembali ke bentuk Pill/Lonjong di laptop */
     font-size: 0.8rem;
+    min-height: 45px;
   }
 }
