@@ -640,3 +640,55 @@ input:focus, select:focus, textarea:focus {
   border-radius: 99px;     /* Bentuk Pill/Lonjong Modern */
   white-space: nowrap;     /* Mencegah teks turun baris jika muat */
 }
+
+/* ========================================= */
+/* LAYOUT TOMBOL TENGAH & TIDAK MEPET PINGGIR */
+/* ========================================= */
+
+/* 1. Wrapper: Bertugas mengambil alih lebar form & menengahkan isi */
+.full-width-center {
+  grid-column: 1 / -1; /* PENTING: Span ke seluruh kolom form (kiri ke kanan) */
+  display: flex;
+  justify-content: center; /* PENTING: Menengahkan anak (grid tombol) */
+  
+  width: 100%;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.2); /* Garis pemisah tipis */
+}
+
+/* 2. Grid Tombol: Mengatur susunan tombol */
+.action-buttons-grid {
+  display: grid;
+  width: 100%;
+  
+  /* KUNCI 'JANGAN TERLALU PINGGIR': Batasi lebar maksimal container tombol */
+  max-width: 650px; 
+  
+  gap: 0.8rem;
+  
+  /* TAMPILAN HP (Default): 2 Kolom x 2 Baris */
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* TAMPILAN LAPTOP (Layar Lebar): 4 Kolom Sejajar */
+@media (min-width: 768px) {
+  .action-buttons-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* 3. Style Tombol agar seragam */
+.action-buttons-grid button {
+  width: 100%;
+  height: 100%;
+  min-height: 48px; /* Tinggi tombol pas */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  white-space: nowrap;
+  
+  padding: 0.6rem 1rem;
+  border-radius: 99px;
+}
