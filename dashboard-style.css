@@ -773,3 +773,36 @@ textarea:focus {
   line-height: 1.2;        /* Spasi antar baris */
   box-sizing: border-box;  /* Pastikan padding tidak menambah lebar elemen */
 }
+
+/* --- LAYOUT GRID KHUSUS OPSI (YA/TIDAK) --- */
+
+.custom-grid-2 {
+  display: grid;
+  /* Minmax 140px memastikan:
+     - Di HP (lebar > 300px): akan muat 2 kolom berdampingan.
+     - Jika layar sangat kecil: otomatis turun jadi 1 kolom (stack).
+  */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+  gap: 0.6rem;
+}
+
+/* Pastikan container input tingginya full */
+.custom-grid-2 > div {
+  height: 100%;
+}
+
+/* Style tombol agar teks rata tengah & tinggi seragam */
+.custom-grid-2 .btn-option {
+  display: flex;
+  align-items: center;     /* Vertikal Center */
+  justify-content: center; /* Horizontal Center */
+  text-align: center;      /* Text Align Center */
+  
+  width: 100%;             /* Lebar Penuh */
+  height: 100%;            /* Tinggi Penuh (Equal Height) */
+  min-height: 50px;        /* Tinggi Minimum biar tombol tidak gepeng */
+  
+  padding: 0.6rem;         /* Padding dalam tombol */
+  line-height: 1.3;        /* Jarak antar baris teks */
+  box-sizing: border-box;
+}
