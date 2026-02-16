@@ -1,45 +1,45 @@
 // legalCheck.js
 // Mesin klasifikasi legalitas layanan & jenis data
 // Menggunakan registry contoh: OJK, Komdigi PSE, AFPI, dan standar biometrik internasional.
-// Catatan: daftar ini contoh untuk prototipe skripsi. Untuk produksi harus dihubungkan ke API resmi.
+
 const LEGAL_REGISTRIES = {
   OJK: {
     code: "OJK",
     label: "Otoritas Jasa Keuangan",
     authorityType: "government",
-    description: "Regulator resmi sektor jasa keuangan di Indonesia."
+    description: "Lembaga negara yang mengatur dan mengawasi sektor jasa keuangan."
   },
   PSE: {
     code: "PSE",
     label: "Komdigi PSE",
     authorityType: "government",
-    description: "Penyelenggara Sistem Elektronik (PSE) yang terdaftar di Komdigi."
+    description: "Penyelenggara Sistem Elektronik yang terdaftar resmi di pemerintah."
   },
   AFPI: {
     code: "AFPI",
     label: "AFPI",
     authorityType: "association",
-    description: "Asosiasi Fintech Pendanaan Bersama Indonesia."
+    description: "Fintech Lending yang berizin dan diawasi oleh OJK."
   },
   INT_BIOMETRIC: {
     code: "INT_BIOMETRIC",
     label: "International Biometric Registry",
     authorityType: "international_standard",
-    description: "Contoh penyedia/standar biometrik yang diakui secara internasional."
+    description: "Vendor keamanan identitas yang memegang sertifikasi ISO/NIST."
   }
 };
+
+// [BAGIAN DATA TIDAK DIUBAH - SESUAI REQUEST]
+// ... (DATA REGISTRY_OJK_BANKS, EWALLETS, PSE, AFPI, BIOMETRIC TETAP SAMA SEPERTI YANG KAMU KIRIM) ...
 
 // ============================================================================
 // 2.1. Bank yang diawasi OJK & Aplikasi Mobile Banking Resmi (Lengkap)
 // ============================================================================
 const REGISTRY_OJK_BANKS = [
-  // --- BANK BUMN & APPS ---
   "BANK MANDIRI", "LIVIN BY MANDIRI", "LIVIN", "LIVIN MANDIRI", "KOPRA",
   "BANK RAKYAT INDONESIA", "BANK BRI", "BRIMO", "BRI MOBILE", "CERIA BRI",
   "BANK NEGARA INDONESIA", "BANK BNI", "BNI MOBILE BANKING", "WONDR BY BNI", "WONDR",
   "BANK TABUNGAN NEGARA", "BANK BTN", "BTN MOBILE", "BTN PROPERTI",
-
-  // --- BANK SWASTA & DIGITAL APPS ---
   "BANK CENTRAL ASIA", "BANK BCA", "BCA MOBILE", "MYBCA", "KLIKBCA", "BLU BY BCA DIGITAL", "BLU BCA",
   "BANK CIMB NIAGA", "OCTO MOBILE", "OCTO CLICKS", "OCTO PAY",
   "BANK DANAMON", "D-BANK PRO", "DANAMON ONLINE",
@@ -65,8 +65,6 @@ const REGISTRY_OJK_BANKS = [
   "SUPERBANK", "BANK ALADIN SYARIAH", "ALADIN",
   "BANK KROM", "KROM BANK",
   "BANK AMAR", "TUNAIKU",
-
-  // --- BANK SYARIAH & APPS ---
   "BANK SYARIAH INDONESIA", "BSI", "BSI MOBILE", "BSI NET",
   "BANK MUAMALAT", "MUAMALAT DIN",
   "BANK MEGA SYARIAH", "M-SYARIAH",
@@ -75,8 +73,6 @@ const REGISTRY_OJK_BANKS = [
   "BANK ALADIN", 
   "BANK VICTORIA SYARIAH",
   "BANK JABAR BANTEN SYARIAH", "BJB SYARIAH",
-
-  // --- BANK PEMBANGUNAN DAERAH (BPD) & APPS ---
   "BANK DKI", "JAKONE MOBILE", "JAKONE",
   "BANK JABAR BANTEN", "BANK BJB", "BJB DIGI", "DIGI BY BJB",
   "BANK JATENG", "BIMA MOBILE", "IBANK JATENG",
@@ -100,8 +96,6 @@ const REGISTRY_OJK_BANKS = [
   "BANK NTT", "B PUNG MOBILE",
   "BANK MALUKU MALUT",
   "BANK PAPUA", "PAPUA MOBILE",
-  
-  // --- BANK GLOBAL DI INDONESIA ---
   "CITIBANK", "CITI MOBILE",
   "HSBC INDONESIA", "HSBC MOBILE",
   "STANDARD CHARTERED", "SC MOBILE",
@@ -115,28 +109,23 @@ const REGISTRY_OJK_BANKS = [
 // 2.1b. E-Wallet, Paylater & Uang Elektronik (Berizin BI/OJK)
 // ============================================================================
 const REGISTRY_EWALLETS = [
-  // E-Wallet Besar
   "GOPAY", "GO-PAY", "GOPAY LATER",
   "OVO", "OVO CASH", "OVO POINTS",
   "DANA", "DANA DOMPET DIGITAL",
   "SHOPEEPAY", "SHOPEE PAY", "SPAYLATER",
   "LINKAJA", "LINK AJA", "LINKAJA SYARIAH",
-  
-  // E-Wallet Ekosistem/Retail
-  "ISAKU", "I.SAKU", // Indomaret
-  "ASTRAPAY", // Astra
+  "ISAKU", "I.SAKU", 
+  "ASTRAPAY", 
   "DOKU", "DOKU WALLET",
-  "SAKUKU", // BCA
+  "SAKUKU", 
   "JAKONE PAY",
   "PAYTREN",
   "SPEEDCASH",
   "KASPRO",
   "SPIN PAY",
   "NOBU E-PAY",
-  "YAP!", // BNI
-  "QRIS", // General term often used by users
-
-  // Paylater & Financing (Non-Bank)
+  "YAP!", 
+  "QRIS", 
   "KREDIVO", "KREDIVO PAYLATER",
   "AKULAKU", "AKULAKU PAY",
   "INDODANA", "INDODANA PAYLATER",
@@ -156,7 +145,6 @@ const REGISTRY_OJK_BANKS_AND_EWALLETS = REGISTRY_OJK_BANKS.concat(REGISTRY_EWALL
 // 2.2. PSE (Layanan Digital Terdaftar Komdigi/Kominfo)
 // ============================================================================
 const REGISTRY_PSE_SERVICES = [
-  // --- MARKETPLACE & E-COMMERCE ---
   "TOKOPEDIA", "SHOP TOKOPEDIA", "MITRA TOKOPEDIA",
   "SHOPEE", "SHOPEE INDONESIA", "MITRA SHOPEE",
   "LAZADA", "LAZADA INDONESIA",
@@ -164,7 +152,7 @@ const REGISTRY_PSE_SERVICES = [
   "BLIBLI", "BLIBLI.COM",
   "TIKTOK SHOP",
   "ZALORA",
-  "JD.ID", // Historical context
+  "JD.ID", 
   "BHINNEKA",
   "SOCIOLLA",
   "RALALI",
@@ -174,14 +162,12 @@ const REGISTRY_PSE_SERVICES = [
   "ALFAGIFT",
   "ASTRO",
   "SAYURBOX",
-
-  // --- TRAVEL & TRANSPORTASI ---
   "TRAVELOKA",
   "TIKET.COM",
   "AGODA",
   "BOOKING.COM",
   "AIRBNB",
-  "PEGIPEGI", // Historical
+  "PEGIPEGI", 
   "MISTER ALADIN",
   "GOJEK", "GOCAR", "GORIDE", "GOFOOD",
   "GRAB", "GRAB INDONESIA", "GRABFOOD",
@@ -192,8 +178,6 @@ const REGISTRY_PSE_SERVICES = [
   "FERIZY",
   "MRT JAKARTA",
   "TRAJEKLINE",
-
-  // --- HIBURAN, STREAMING & GAME ---
   "NETFLIX",
   "DISNEY+ HOTSTAR", "DISNEY PLUS",
   "VIDIO", "VIDIO.COM",
@@ -220,8 +204,6 @@ const REGISTRY_PSE_SERVICES = [
   "NINTENDO ESHOP",
   "CANDY CRUSH",
   "CLASH OF CLANS",
-
-  // --- PRODUKTIVITAS & PENDIDIKAN ---
   "GOOGLE", "GMAIL", "GOOGLE DRIVE", "GOOGLE DOCS", "GOOGLE CLASSROOM",
   "ZOOM", "ZOOM MEETING",
   "MICROSOFT", "MICROSOFT 365", "TEAMS",
@@ -238,8 +220,6 @@ const REGISTRY_PSE_SERVICES = [
   "GLINTS",
   "JOBSTREET",
   "KITA LULUS",
-
-  // --- LAYANAN PUBLIK & UTILITAS ---
   "PEDULILINDUNGI", "SATUSEHAT",
   "MJKN", "MOBILE JKN",
   "PLN MOBILE",
@@ -261,7 +241,6 @@ const REGISTRY_PSE_SERVICES = [
 // 2.3. Anggota AFPI (Fintech Lending / Pinjol Legal)
 // ============================================================================
 const REGISTRY_AFPI_MEMBERS = [
-  // Top Tier (Paling Sering Dipakai)
   "KREDIVO",
   "AKULAKU",
   "EASYCASH",
@@ -276,8 +255,6 @@ const REGISTRY_AFPI_MEMBERS = [
   "AMARTHA",
   "KOINWORKS",
   "ASETKU",
-  
-  // Daftar Lengkap Berizin OJK (Update 2024/2025)
   "DANAMAS",
   "AKSELERAN",
   "POHON DANA",
@@ -348,7 +325,7 @@ const REGISTRY_AFPI_MEMBERS = [
   "EDUFUND",
   "GANDENGTANGAN",
   "PAPITUPI",
-  "FINMAS", // Historical check
+  "FINMAS", 
   "KTA KILAT"
 ];
 
@@ -356,26 +333,21 @@ const REGISTRY_AFPI_MEMBERS = [
 // 2.4. Penyedia / Standar Biometrik & Identitas Internasional (Vendor)
 // ============================================================================
 const REGISTRY_INTL_BIOMETRIC = [
-  // Raksasa Teknologi (Provider)
   "APPLE FACE ID", "FACE ID", "TOUCH ID",
   "ANDROID BIOMETRIC", "GOOGLE BIOMETRIC API",
   "WINDOWS HELLO", "MICROSOFT FACE API",
   "AMAZON REKOGNITION", "AWS REKOGNITION",
   "IBM WATSON VISUAL RECOGNITION",
   "SAMSUNG PASS",
-
-  // Vendor Verifikasi Identitas (Global & Lokal)
-  "VIDA", "VIDA DIGITAL IDENTITY", // Lokal Official
-  "PRIVY", "PRIVYID", // Lokal Official
-  "TILAKA", // Lokal Official
-  "PERURI", "PERURI DIGITAL", // BUMN
-  "ASLI RI", "ASLI.RI", // Lokal
-  "TEGUH", // Lokal
-  "DIGISIGN", // Lokal
-  "XENIDENTITY", // Xendit
-  "VERIHUBS", // Lokal
-
-  // Vendor Global
+  "VIDA", "VIDA DIGITAL IDENTITY", 
+  "PRIVY", "PRIVYID", 
+  "TILAKA", 
+  "PERURI", "PERURI DIGITAL", 
+  "ASLI RI", "ASLI.RI", 
+  "TEGUH", 
+  "DIGISIGN", 
+  "XENIDENTITY", 
+  "VERIHUBS", 
   "JUMIO",
   "ONFIDO",
   "THALES GROUP", "THALES GEMALTO",
@@ -404,6 +376,8 @@ const REGISTRY_INTL_BIOMETRIC = [
   "IPROOV"
 ];
 
+//// 3. Util pencarian nama
+
 function legalNormalizeName(name) {
   return (name || "").toString().trim().toUpperCase();
 }
@@ -413,6 +387,8 @@ function legalSearchInList(list, targetName) {
   if (!t) return false;
   return list.some((item) => legalNormalizeName(item).includes(t));
 }
+
+//// 4. Fungsi cek registry spesifik (sinkron)
 
 function legalCheckOjk(serviceName) {
   const found = legalSearchInList(REGISTRY_OJK_BANKS_AND_EWALLETS, serviceName);
@@ -450,6 +426,9 @@ function legalCheckIntlBiometric(serviceName) {
   };
 }
 
+//// 5. Dispatcher: cek berdasarkan jenis platform
+// [PERBAIKAN] MENAMBAHKAN LOGIKA UNTUK KATEGORI BARU
+
 function legalCheckByPlatform(platformType, serviceNameOrDomain) {
   const pt = (platformType || "").toLowerCase();
   let raw = null;
@@ -463,6 +442,7 @@ function legalCheckByPlatform(platformType, serviceNameOrDomain) {
   else if (pt === "biometric" || pt === "biometrik") {
     raw = legalCheckIntlBiometric(serviceNameOrDomain);
   } 
+  // [PERBAIKAN] Menangkap semua kategori digital ke PSE
   else if (
     pt === "ecommerce" || pt === "e-commerce" ||
     pt === "travel" || 
@@ -481,11 +461,12 @@ function legalCheckByPlatform(platformType, serviceNameOrDomain) {
       isLegal: true,
       isGovernmentApproved: false,
       confidence: "low",
-      reason: "Platform umum. Dianggap legal, namun kepatuhan dievaluasi manual."
+      reason: "Platform umum tanpa registry pemerintah spesifik. Dianggap legal secara umum, namun kepatuhan detail tetap harus dievaluasi manual."
     };
   }
- 
+
   const { registry, found } = raw;
+
   if (found) {
     return {
       platformType: pt,
@@ -497,16 +478,19 @@ function legalCheckByPlatform(platformType, serviceNameOrDomain) {
       reason: `Layanan teridentifikasi dalam registry ${registry.label}.`
     };
   }
+
   return {
     platformType: pt,
     serviceName: serviceNameOrDomain,
     registry,
     isLegal: false,
-    isGovernmentApproved: false,
+    isGovernmentApproved: registry.authorityType === "government",
     confidence: "medium",
-    reason: `Layanan tidak ditemukan dalam registry ${registry.label}.`
+    reason: `Layanan tidak ditemukan dalam registry ${registry.label}. Berpotensi belum terdaftar atau tidak memiliki dasar legal yang jelas.`
   };
 }
+
+//// 6. Rule-based legalitas jenis data
 
 function legalNormalizeCategory(cat) {
   return (cat || "").toString().trim().toLowerCase();
@@ -573,6 +557,8 @@ function legalEvaluateDataRule(platformType, dataCategories) {
   };
 }
 
+//// 7. Kombinasi dengan hasil Likelihood–Impact Matrix
+
 function legalRiskToScore(level) {
   const v = (level || "").toLowerCase();
   if (v === "low") return 1;
@@ -601,6 +587,7 @@ function legalCombineRisk(matrixRiskLevel, legalStatus, dataRule) {
   let baseScore = Math.max(matrixScore, dataScore);
   let baseLevel = legalScoreToRisk(baseScore);
 
+  // 1. LEGAL + PEMERINTAH (OJK / Komdigi PSE) -> Override Low
   if (legalStatus && legalStatus.isLegal && legalStatus.isGovernmentApproved) {
     return {
       finalRiskLevel: "Low",
@@ -611,6 +598,7 @@ function legalCombineRisk(matrixRiskLevel, legalStatus, dataRule) {
     };
   }
 
+  // 2. Legal Non-Pemerintah
   if (legalStatus && legalStatus.isLegal && !legalStatus.isGovernmentApproved) {
     return {
       finalRiskLevel: baseLevel,
@@ -621,6 +609,7 @@ function legalCombineRisk(matrixRiskLevel, legalStatus, dataRule) {
     };
   }
 
+  // 3. Tidak legal + Data High
   if (
     legalStatus &&
     !legalStatus.isLegal &&
@@ -637,6 +626,8 @@ function legalCombineRisk(matrixRiskLevel, legalStatus, dataRule) {
     fromGovernmentRegistry: false
   };
 }
+
+//// 8. Fungsi utama
 
 function legalEvaluateContext({ platformType, serviceName, dataCategories, matrixRiskLevel }) {
   const legalStatus = legalCheckByPlatform(platformType, serviceName);
@@ -664,4 +655,3 @@ window.LegalEngine = {
   combineRiskWithLegalContext: legalCombineRisk,
   evaluateLegalContext: legalEvaluateContext
 };
-
