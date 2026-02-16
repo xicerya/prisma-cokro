@@ -631,19 +631,29 @@ input:focus, select:focus, textarea:focus {
 /* --- TAMPILAN LAPTOP (DESKTOP) --- */
 @media (min-width: 992px) {
   .form-actions-container {
-    /* Memaksa 4 kolom sejajar */
+    /* 1. Kunci agar tidak ikut kolom grid form */
+    grid-column: 1 / -1 !important; 
+    
+    /* 2. Gunakan Flex untuk membungkus grid tombol agar bisa di-center */
+    display: grid !important; 
+    
+    /* 3. Samakan lebar dengan .form-section */
+    max-width: 850px !important; 
+    width: 100% !important;
+
+    /* 4. Center Horizontal */
+    margin-left: auto !important;
+    margin-right: auto !important;
+
+    /* 5. Layout Tombol Sejajar */
     grid-template-columns: repeat(4, 1fr) !important; 
     gap: 1rem;
     margin-top: 1.5rem;
-    
-    /* Memastikan lebar maksimal 850px dan tepat di tengah */
-    max-width: 850px !important; 
-    margin-left: auto !important;
-    margin-right: auto !important;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
   }
   
   .form-actions-container button {
-    /* Style tombol khusus laptop */
     white-space: nowrap !important; 
     padding: 0.75rem 1rem;          
     border-radius: 99px; 
