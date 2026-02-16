@@ -743,27 +743,33 @@ textarea:focus {
   border-color: var(--bad);
   transform: scale(1.05);
 }
+/* --- LAYOUT GRID CHECKBOX LEGALITAS --- */
 
-            <style>
-              .custom-grid-legal {
-                display: grid;
-                /* Di HP otomatis 2 kolom, di Laptop otomatis menyesuaikan */
-                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
-                gap: 0.6rem;
-              }
-              .custom-grid-legal .btn-option {
-                display: flex;
-                align-items: center;     /* Teks vertikal di tengah */
-                justify-content: center; /* Teks horizontal di tengah */
-                text-align: center;      /* Biar teks panjang tetap rapi di tengah */
-                width: 100%;             /* Paksa lebar penuh */
-                height: 100%;            /* Paksa tinggi penuh mengikuti temannya */
-                min-height: 50px;        /* Tinggi minimal biar tombol tidak gepeng */
-                padding: 0.5rem;         /* Jarak teks ke pinggir tombol */
-                line-height: 1.2;        /* Spasi baris untuk teks panjang */
-              }
-              /* Pastikan pembungkus div-nya juga full height */
-              .custom-grid-legal > div {
-                height: 100%;
-              }
-            </style>
+.custom-grid-legal {
+  display: grid;
+  /* Logic: Buat kolom sebanyak mungkin, tapi jangan lebih kecil dari 130px per item.
+     Ini membuat di HP jadi 2 kolom, di Laptop jadi 4-5 kolom otomatis. */
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+  gap: 0.6rem;
+}
+
+/* Pastikan pembungkus div input tingginya penuh mengikuti grid */
+.custom-grid-legal > div {
+  height: 100%;
+}
+
+/* Style Tombol agar teks rata tengah & tinggi seragam */
+.custom-grid-legal .btn-option {
+  display: flex;
+  align-items: center;     /* Teks vertikal di tengah */
+  justify-content: center; /* Teks horizontal di tengah */
+  text-align: center;      /* Untuk teks yang lebih dari 1 baris */
+  
+  width: 100%;             /* Lebar penuh container */
+  height: 100%;            /* Paksa tinggi penuh mengikuti temannya (Grid) */
+  min-height: 54px;        /* Tinggi minimal agar nyaman disentuh jari */
+  
+  padding: 0.5rem;         /* Jarak aman teks ke pinggir tombol */
+  line-height: 1.2;        /* Spasi antar baris */
+  box-sizing: border-box;  /* Pastikan padding tidak menambah lebar elemen */
+}
