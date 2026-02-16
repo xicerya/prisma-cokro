@@ -330,12 +330,21 @@ input:focus, select:focus, textarea:focus {
 /* Grid C: Untuk Tombol Aksi (Hitung, Simpan, dll) */
 .custom-action-grid {
   display: grid;
-  /* Laptop: 4 tombol berjejer. HP: 2 baris x 2 kolom */
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 0.8rem;
   margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(148, 163, 184, 0.2);
+  
+  /* DEFAULT (Tampilan HP): Wajib 2 Kolom x 2 Baris */
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* MEDIA QUERY (Tampilan Laptop): Wajib 4 Kolom Sejajar */
+/* Jika layar lebih lebar dari 768px (Tablet/Laptop), ubah jadi 4 kolom */
+@media (min-width: 768px) {
+  .custom-action-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 /* Style Tombol Aksi */
