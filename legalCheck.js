@@ -2,9 +2,6 @@
 // Mesin klasifikasi legalitas layanan & jenis data
 // Menggunakan registry contoh: OJK, Komdigi PSE, AFPI, dan standar biometrik internasional.
 // Catatan: daftar ini contoh untuk prototipe skripsi. Untuk produksi harus dihubungkan ke API resmi.
-
-//// 1. Konfigurasi registry
-
 const LEGAL_REGISTRIES = {
   OJK: {
     code: "OJK",
@@ -406,7 +403,6 @@ const REGISTRY_INTL_BIOMETRIC = [
   "YOTI",
   "IPROOV"
 ];
-//// 3. Util pencarian nama
 
 function legalNormalizeName(name) {
   return (name || "").toString().trim().toUpperCase();
@@ -418,9 +414,6 @@ function legalSearchInList(list, targetName) {
   return list.some((item) => legalNormalizeName(item).includes(t));
 }
 
-//// 4. Fungsi cek registry spesifik (sinkron)
-
-// Cek ke registry OJK untuk bank + e-wallet
 function legalCheckOjk(serviceName) {
   const found = legalSearchInList(REGISTRY_OJK_BANKS_AND_EWALLETS, serviceName);
   return {
@@ -430,7 +423,6 @@ function legalCheckOjk(serviceName) {
   };
 }
 
-// Cek ke registry Komdigi PSE
 function legalCheckPse(serviceNameOrDomain) {
   const found = legalSearchInList(REGISTRY_PSE_SERVICES, serviceNameOrDomain);
   return {
@@ -440,7 +432,6 @@ function legalCheckPse(serviceNameOrDomain) {
   };
 }
 
-// Cek ke registry AFPI
 function legalCheckAfpi(serviceName) {
   const found = legalSearchInList(REGISTRY_AFPI_MEMBERS, serviceName);
   return {
@@ -450,7 +441,6 @@ function legalCheckAfpi(serviceName) {
   };
 }
 
-// Cek ke registry / standar biometrik internasional
 function legalCheckIntlBiometric(serviceName) {
   const found = legalSearchInList(REGISTRY_INTL_BIOMETRIC, serviceName);
   return {
@@ -460,22 +450,30 @@ function legalCheckIntlBiometric(serviceName) {
   };
 }
 
-//// 5. Dispatcher: cek berdasarkan jenis platform
-
 function legalCheckByPlatform(platformType, serviceNameOrDomain) {
   const pt = (platformType || "").toLowerCase();
   let raw = null;
 
   if (pt === "bank") {
-    raw = legalCheckOjk(serviceNameOrDomain);         // termasuk e-wallet
-  } else if (pt === "ecommerce" || pt === "e-commerce") {
-    raw = legalCheckPse(serviceNameOrDomain);
-  } else if (pt === "fintech") {
+    raw = legalCheckOjk(serviceNameOrDomain);
+  } 
+  else if (pt === "fintech") {
     raw = legalCheckAfpi(serviceNameOrDomain);
-  } else if (pt === "biometric" || pt === "biometrik" || pt === "biometric-service") {
+  } 
+  else if (pt === "biometric" || pt === "biometrik") {
     raw = legalCheckIntlBiometric(serviceNameOrDomain);
-  } else {
-    // Website biasa, game, "lainnya", dan platform umum lain
+  } 
+  else if (
+    pt === "ecommerce" || pt === "e-commerce" ||
+    pt === "travel" || 
+    pt === "productivity" || 
+    pt === "education_health" || 
+    pt === "entertainment" ||
+    pt === "game"
+  ) {
+    raw = legalCheckPse(serviceNameOrDomain);
+  } 
+  else {
     return {
       platformType: pt,
       serviceName: serviceNameOrDomain,
@@ -483,13 +481,11 @@ function legalCheckByPlatform(platformType, serviceNameOrDomain) {
       isLegal: true,
       isGovernmentApproved: false,
       confidence: "low",
-      reason:
-        "Platform umum tanpa registry pemerintah spesifik. Dianggap legal secara umum, namun kepatuhan detail tetap harus dievaluasi manual."
+      reason: "Platform umum. Dianggap legal, namun kepatuhan dievaluasi manual."
     };
   }
-
+ 
   const { registry, found } = raw;
-
   if (found) {
     return {
       platformType: pt,
@@ -501,19 +497,16 @@ function legalCheckByPlatform(platformType, serviceNameOrDomain) {
       reason: `Layanan teridentifikasi dalam registry ${registry.label}.`
     };
   }
-
   return {
     platformType: pt,
     serviceName: serviceNameOrDomain,
     registry,
     isLegal: false,
-    isGovernmentApproved: registry.authorityType === "government",
+    isGovernmentApproved: false,
     confidence: "medium",
-    reason: `Layanan tidak ditemukan dalam registry ${registry.label}. Berpotensi belum terdaftar atau tidak memiliki dasar legal yang jelas.`
+    reason: `Layanan tidak ditemukan dalam registry ${registry.label}.`
   };
 }
-
-//// 6. Rule-based legalitas jenis data
 
 function legalNormalizeCategory(cat) {
   return (cat || "").toString().trim().toLowerCase();
@@ -524,13 +517,6 @@ function legalContainsAny(categories, keywords) {
   return keywords.some((k) => set.includes(k));
 }
 
-/**
- * Aturan:
- * - Bank + KTP/SIM/Selfie          → legal, Low (Hijau)
- * - Website biasa + KTP/SIM        → tidak legal, High
- * - E-commerce + nama + alamat     → legal, Medium
- * - Game platform + wajah/suara    → hati-hati, High
- */
 function legalEvaluateDataRule(platformType, dataCategories) {
   const pt = (platformType || "").toLowerCase();
   const cats = (dataCategories || []).map(legalNormalizeCategory);
@@ -540,7 +526,6 @@ function legalEvaluateDataRule(platformType, dataCategories) {
   let explanation =
     "Tidak ada aturan khusus yang terpenuhi. Evaluasi lebih detail diperlukan.";
 
-  // 1. Bank + KTP / SIM / Selfie → wajib secara hukum, Low
   if (pt === "bank" && legalContainsAny(cats, ["ktp", "sim", "selfie"])) {
     legal = true;
     baseRisk = "Low";
@@ -548,7 +533,6 @@ function legalEvaluateDataRule(platformType, dataCategories) {
       "Bank / lembaga keuangan berizin diperbolehkan secara hukum meminta KTP/SIM/Selfie untuk keperluan verifikasi identitas (KYC).";
   }
 
-  // 2. Website biasa + KTP / SIM → tidak ada dasar hukum, High
   if (
     (pt === "website" || pt === "web" || pt === "generic_web") &&
     legalContainsAny(cats, ["ktp", "sim"])
@@ -559,7 +543,6 @@ function legalEvaluateDataRule(platformType, dataCategories) {
       "Website biasa yang bukan lembaga resmi tidak memiliki dasar hukum kuat untuk meminta KTP/SIM.";
   }
 
-  // 3. E-commerce + nama + alamat → legal, Medium
   if (
     (pt === "ecommerce" || pt === "e-commerce") &&
     legalContainsAny(cats, ["nama"]) &&
@@ -571,7 +554,6 @@ function legalEvaluateDataRule(platformType, dataCategories) {
       "Platform e-commerce lazim dan legal meminta nama dan alamat untuk kebutuhan pengiriman barang.";
   }
 
-  // 4. Game platform + wajah / suara → data biometrik sensitif, High
   if (
     (pt === "game" || pt === "gaming" || pt === "game_platform") &&
     legalContainsAny(cats, ["wajah", "suara", "voice", "face"])
@@ -590,8 +572,6 @@ function legalEvaluateDataRule(platformType, dataCategories) {
     explanation
   };
 }
-
-//// 7. Kombinasi dengan hasil Likelihood–Impact Matrix
 
 function legalRiskToScore(level) {
   const v = (level || "").toLowerCase();
@@ -614,15 +594,6 @@ function legalRiskColor(level) {
   return "red";
 }
 
-/**
- * Aturan kombinasi:
- * 1. Jika isLegal && isGovernmentApproved (OJK / Komdigi PSE)
- *    → finalRisk = Low (Hijau), override apapun.
- * 2. Jika isLegal, tapi non-pemerintah (AFPI / internasional / website/game/lainnya)
- *    → TIDAK mengubah perhitungan Likelihood–Impact, hanya memberi konteks legalitas.
- * 3. Jika !isLegal && baseRiskByDataRule = High → boleh dinaikkan 1 tingkat (opsional).
- * 4. Selain itu → gunakan max(matrixRisk, dataRule).
- */
 function legalCombineRisk(matrixRiskLevel, legalStatus, dataRule) {
   const matrixScore = legalRiskToScore(matrixRiskLevel);
   const dataScore = legalRiskToScore(dataRule.baseRiskByDataRule);
@@ -630,7 +601,6 @@ function legalCombineRisk(matrixRiskLevel, legalStatus, dataRule) {
   let baseScore = Math.max(matrixScore, dataScore);
   let baseLevel = legalScoreToRisk(baseScore);
 
-  // 1️⃣ LEGAL + PEMERINTAH (OJK / Komdigi PSE) → paksa Low (Hijau)
   if (legalStatus && legalStatus.isLegal && legalStatus.isGovernmentApproved) {
     return {
       finalRiskLevel: "Low",
@@ -641,7 +611,6 @@ function legalCombineRisk(matrixRiskLevel, legalStatus, dataRule) {
     };
   }
 
-  // 2️⃣ Legal tapi BUKAN lembaga pemerintah (AFPI / biometric / website / game / lainnya)
   if (legalStatus && legalStatus.isLegal && !legalStatus.isGovernmentApproved) {
     return {
       finalRiskLevel: baseLevel,
@@ -652,7 +621,6 @@ function legalCombineRisk(matrixRiskLevel, legalStatus, dataRule) {
     };
   }
 
-  // 3️⃣ Tidak legal + rule data High → opsional: dinaikkan 1 tingkat
   if (
     legalStatus &&
     !legalStatus.isLegal &&
@@ -670,8 +638,6 @@ function legalCombineRisk(matrixRiskLevel, legalStatus, dataRule) {
   };
 }
 
-//// 8. Fungsi utama yang dipakai RiskEngine
-
 function legalEvaluateContext({ platformType, serviceName, dataCategories, matrixRiskLevel }) {
   const legalStatus = legalCheckByPlatform(platformType, serviceName);
   const dataRule = legalEvaluateDataRule(platformType, dataCategories || []);
@@ -688,7 +654,6 @@ function legalEvaluateContext({ platformType, serviceName, dataCategories, matri
   };
 }
 
-// Daftarkan ke global window supaya bisa diakses riskEngine.js / app.js
 window.LegalEngine = {
   checkOjkBank: legalCheckOjk,
   checkKominfoPse: legalCheckPse,
@@ -699,3 +664,4 @@ window.LegalEngine = {
   combineRiskWithLegalContext: legalCombineRisk,
   evaluateLegalContext: legalEvaluateContext
 };
+
