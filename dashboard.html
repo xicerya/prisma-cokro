@@ -97,34 +97,54 @@
 
           <div class="form-group">
             <label>Jenis Data Spesifik yang Dikumpulkan (Untuk Analisis Legalitas)</label>
+            <style>
+              .custom-grid-legal {
+                display: grid;
+                /* Di HP otomatis 2 kolom, di Laptop otomatis menyesuaikan */
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+                gap: 0.6rem;
+              }
+              .custom-grid-legal .btn-option {
+                display: flex;
+                align-items: center;     /* Teks vertikal di tengah */
+                justify-content: center; /* Teks horizontal di tengah */
+                text-align: center;      /* Biar teks panjang tetap rapi di tengah */
+                width: 100%;             /* Paksa lebar penuh */
+                height: 100%;            /* Paksa tinggi penuh mengikuti temannya */
+                min-height: 50px;        /* Tinggi minimal biar tombol tidak gepeng */
+                padding: 0.5rem;         /* Jarak teks ke pinggir tombol */
+                line-height: 1.2;        /* Spasi baris untuk teks panjang */
+              }
+              /* Pastikan pembungkus div-nya juga full height */
+              .custom-grid-legal > div {
+                height: 100%;
+              }
+            </style>
 
-            <div class="inline-options checkbox-group" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 0.5rem;">
+            <div class="inline-options checkbox-group custom-grid-legal">
               
               <div>
                 <input type="checkbox" id="legal-ktp" name="legalDataCategory" value="ktp" class="hidden-input" />
-                <label for="legal-ktp" class="btn-option">KTP/NIK</label>
+                <label for="legal-ktp" class="btn-option">KTP / NIK</label>
               </div>
-              
               <div>
                 <input type="checkbox" id="legal-sim" name="legalDataCategory" value="sim" class="hidden-input" />
-                <label for="legal-sim" class="btn-option">SIM/Paspor</label>
+                <label for="legal-sim" class="btn-option">SIM / Paspor</label>
               </div>
 
               <div>
                 <input type="checkbox" id="legal-nama" name="legalDataCategory" value="nama" class="hidden-input" />
                 <label for="legal-nama" class="btn-option">Nama Lengkap</label>
               </div>
-              
               <div>
                 <input type="checkbox" id="legal-email" name="legalDataCategory" value="email" class="hidden-input" />
-                <label for="legal-email" class="btn-option">Email/No. HP</label>
+                <label for="legal-email" class="btn-option">Email / No. HP</label>
               </div>
-              
+
               <div>
                 <input type="checkbox" id="legal-alamat" name="legalDataCategory" value="alamat" class="hidden-input" />
-                <label for="legal-alamat" class="btn-option">Alamat</label>
+                <label for="legal-alamat" class="btn-option">Alamat Rumah</label>
               </div>
-              
               <div>
                 <input type="checkbox" id="legal-lokasi" name="legalDataCategory" value="lokasi" class="hidden-input" />
                 <label for="legal-lokasi" class="btn-option">Lokasi GPS</label>
@@ -132,23 +152,22 @@
 
               <div>
                 <input type="checkbox" id="legal-rekening" name="legalDataCategory" value="rekening" class="hidden-input" />
-                <label for="legal-rekening" class="btn-option">Rekening</label>
+                <label for="legal-rekening" class="btn-option">Rekening Bank</label>
               </div>
 
               <div>
                 <input type="checkbox" id="legal-selfie" name="legalDataCategory" value="selfie" class="hidden-input" />
                 <label for="legal-selfie" class="btn-option">Selfie Wajah</label>
               </div>
-              
               <div>
                 <input type="checkbox" id="legal-wajah" name="legalDataCategory" value="wajah" class="hidden-input" />
                 <label for="legal-wajah" class="btn-option">Scan Wajah</label>
               </div>
-              
               <div>
                 <input type="checkbox" id="legal-suara" name="legalDataCategory" value="suara" class="hidden-input" />
-                <label for="legal-suara" class="btn-option">Suara</label>
+                <label for="legal-suara" class="btn-option">Rekaman Suara</label>
               </div>
+            </div>
             </div>
           </div>
         </div>
