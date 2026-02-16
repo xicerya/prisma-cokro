@@ -592,3 +592,51 @@ input:focus, select:focus, textarea:focus {
   color: var(--text-muted);
   text-align: right;
 }
+
+/* ========================================= */
+/* GRID TOMBOL TENGAH & SAMA RATA (FINAL)    */
+/* ========================================= */
+
+.action-grid-center {
+  display: grid;
+  width: 100%;
+  gap: 0.8rem; /* Jarak antar tombol */
+  
+  /* Garis pemisah tipis di atas tombol (Opsional, biar rapi) */
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+
+  /* --- LOGIKA RESPONSIF --- */
+  
+  /* TAMPILAN HP (Default): 
+     Membuat 2 Kolom dengan lebar sama (1fr = 1 fraction).
+     Hasil: Grid 2x2 */
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* TAMPILAN LAPTOP (Layar > 768px):
+   Ubah menjadi 4 Kolom sejajar. 
+   Hasil: 1 Baris lurus rata tengah */
+@media (min-width: 768px) {
+  .action-grid-center {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* --- STYLE UNTUK SEMUA TOMBOL DI DALAM GRID --- */
+.action-grid-center button {
+  width: 100%;             /* Paksa lebar memenuhi kotak grid */
+  height: 100%;            /* Paksa tinggi sama */
+  min-height: 50px;        /* Tinggi minimal biar enak ditekan */
+  
+  display: flex;           /* Flexbox untuk menengahkan teks */
+  justify-content: center; /* Teks rata tengah horizontal */
+  align-items: center;     /* Teks rata tengah vertikal */
+  text-align: center;
+  
+  /* Reset padding default agar tidak gepeng */
+  padding: 0.6rem 1rem;
+  border-radius: 99px;     /* Bentuk Pill/Lonjong Modern */
+  white-space: nowrap;     /* Mencegah teks turun baris jika muat */
+}
