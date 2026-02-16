@@ -1,6 +1,5 @@
 // app.js
 // Interaksi UI untuk Dashboard Analisis Risiko Privasi
-// REVISI: Penambahan Fitur Hapus Riwayat Per Item
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("risk-form");
@@ -11,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const nistContainer = document.getElementById("nist-results");
   const recContainer = document.getElementById("recommendations");
 
-  // Inisialisasi matriks kosong saat pertama load
   buildEmptyMatrix();
 
   if (!form) {
@@ -19,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // 🟢 Filter otomatis layanan berdasarkan platformType
   const platformSelect = document.getElementById("platformType");
   const serviceSelect = document.getElementById("serviceName");
 
@@ -29,68 +26,57 @@ document.addEventListener("DOMContentLoaded", () => {
     function filterServiceOptions() {
       const platform = (platformSelect.value || "").toLowerCase();
 
-      // Tampilkan semua dulu
-      optgroups.forEach((g) => {
-        g.hidden = false;
-      });
+      optgroups.forEach((g) => { g.hidden = false; });
 
-      // Kalau tidak ada platform / lainnya → biarkan semua muncul
-      if (!platform || platform === "lainnya") {
-        return;
-      }
+      if (!platform || platform === "lainnya") return;
 
       optgroups.forEach((g) => {
         const label = (g.label || "").toLowerCase();
         let match = false;
 
         if (platform === "bank" && label.includes("bank (ojk)")) {
-          match = true;
-        } else if (
-          (platform === "ecommerce" || platform === "e-commerce") &&
-          label.includes("pse / e-commerce")
+            match = true;
+        } 
+        else if (platform === "fintech" && label.includes("fintech")) {
+            match = true;
+        } 
+        else if ((platform === "biometric" || platform === "biometrik") && label.includes("biometrik")) {
+            match = true;
+        }
+        else if (
+            (platform === "ecommerce" || platform === "e-commerce" ||
+             platform === "travel" || 
+             platform === "productivity" || 
+             platform === "education_health" || 
+             platform === "entertainment" ||
+             platform === "game") &&
+             label.includes("pse")
         ) {
-          match = true;
-        } else if (platform === "fintech" && label.includes("fintech")) {
-          match = true;
-        } else if (
-          (platform === "biometric" || platform === "biometrik") &&
-          label.includes("biometrik / verifikasi internasional")
-        ) {
-          match = true;
+            match = true;
         }
 
         g.hidden = !match;
       });
 
-      // reset pilihan setiap kali ganti platform
       serviceSelect.value = "";
     }
 
     platformSelect.addEventListener("change", filterServiceOptions);
-    // jalan sekali di awal
     filterServiceOptions();
   }
 
-  // ======================
-  // EVENT HANDLER: SUBMIT
-  // ======================
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     
-    // 1. Kumpulkan Data
     const params = collectParams();
-    
-    // 2. Jalankan Analisis (Risk Engine)
     const result = RiskEngine.analyze(params);
 
-    // 3. Render Semua Hasil ke UI
     renderSummary(params, result);
     renderMatrix(result);
     renderPDP(result.pdpResults);
     renderNIST(result.nistResults);
     renderRecommendations(result.recommendations);
 
-    // Scroll otomatis ke bagian hasil agar user sadar sudah dihitung
     document.getElementById("summary-card").scrollIntoView({ behavior: "smooth" });
   });
 
@@ -112,9 +98,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 0);
   });
 
-  // ======================
-  // KUMPUL PARAMETER FORM
-  // ======================
   function collectParams() {
     const scenarioName = document.getElementById("scenarioName").value.trim();
 
@@ -172,14 +155,9 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // ======================
-  // RINGKASAN & HASIL (DENGAN TIMESTAMP)
-  // ======================
   function renderSummary(params, result) {
     summaryContent.classList.remove("placeholder");
     
-    // --- 1. LOGIKA TIMESTAMP (BARU) ---
-    // Mengambil waktu saat ini dan memformatnya ke Bahasa Indonesia
     const now = new Date();
     const options = { 
         weekday: 'long', 
@@ -192,7 +170,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     const timeString = now.toLocaleDateString('id-ID', options);
 
-    // Tentukan warna badge
     const badgeClass =
       result.riskLevel === "Tinggi"
         ? "high"
@@ -231,8 +208,6 @@ document.addEventListener("DOMContentLoaded", () => {
            </p>`
         : "";
 
-    // --- 2. RENDER HTML ---
-    // Perhatikan bagian div pertama yang menampilkan timestamp
     summaryContent.innerHTML = `
       <div style="border-bottom: 1px solid rgba(148, 163, 184, 0.2); padding-bottom: 0.8rem; margin-bottom: 1rem;">
           <p style="margin-bottom:0.25rem; font-size: 1rem;">
@@ -408,10 +383,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
   }
-
-  // =========================================
-  // FITUR: LOCAL STORAGE PERSISTENCE (ENCRYPTED)
-  // =========================================
   
   const STORAGE_KEY = "prisma_cokro_history_v1";
   const btnSave = document.getElementById("btn-save");
@@ -421,7 +392,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnCloseHistory = document.getElementById("btn-close-history");
   const btnClearHistory = document.getElementById("btn-clear-history");
 
-  // Helper untuk membaca & dekripsi data (atob)
   function getStoredHistory() {
     const rawData = localStorage.getItem(STORAGE_KEY);
     if (!rawData) return [];
@@ -435,7 +405,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Helper untuk enkripsi & menyimpan data (btoa)
   function saveStoredHistory(dataArray) {
     try {
       const jsonString = JSON.stringify(dataArray);
@@ -448,15 +417,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Helper khusus untuk menghapus 1 item
   function removeHistoryItem(idToRemove) {
     const current = getStoredHistory();
     const updated = current.filter(item => item.id !== idToRemove);
     saveStoredHistory(updated);
-    renderHistory(); // Refresh tampilan
+    renderHistory();
   }
 
-  // 1. Fungsi Simpan ke LocalStorage
   if (btnSave) {
     btnSave.addEventListener("click", () => {
       const scenarioName = document.getElementById("scenarioName").value;
@@ -476,14 +443,13 @@ document.addEventListener("DOMContentLoaded", () => {
         savedLevel = result.riskLevel;
       }
 
-      // Gunakan waktu simpan
       const nowSave = new Date();
       const saveTime = nowSave.toLocaleDateString('id-ID', {
          day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'
       });
 
       const newEntry = {
-        id: Date.now(), // Unique ID berdasarkan waktu
+        id: Date.now(),
         timestamp: saveTime,
         name: params.scenarioName,
         score: savedScore,
@@ -506,7 +472,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 2. Fungsi Tampilkan List Riwayat (UPDATED: Add Delete Button)
   function renderHistory() {
     const history = getStoredHistory();
     historyList.innerHTML = "";
@@ -523,7 +488,6 @@ document.addEventListener("DOMContentLoaded", () => {
       el.onmouseover = () => el.style.background = "rgba(34, 211, 238, 0.1)";
       el.onmouseout = () => el.style.background = "rgba(255,255,255,0.05)";
       
-      // Styling Badge & Score
       let badgeColor = "#9ca3af"; 
       let badgeText = item.level;
       let scoreText = `Score: ${item.score}`;
@@ -540,7 +504,6 @@ document.addEventListener("DOMContentLoaded", () => {
         badgeColor = "#22c55e";
       }
 
-      // Render HTML dalam item
       el.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <div style="flex:1;">
@@ -557,13 +520,12 @@ document.addEventListener("DOMContentLoaded", () => {
              </div>
 
              <button class="btn-delete-item" title="Hapus item ini">
-                🗑
+                X
              </button>
           </div>
         </div>
       `;
 
-      // Event Listener: Klik Item (Muat Data)
       el.addEventListener("click", () => {
         loadFormData(item.formData);
         historyPanel.style.display = "none";
@@ -575,11 +537,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // Event Listener: Klik Tombol Hapus (Hapus Data)
       const deleteBtn = el.querySelector(".btn-delete-item");
       if (deleteBtn) {
         deleteBtn.addEventListener("click", (e) => {
-           e.stopPropagation(); // PENTING: Supaya tidak memicu klik pada item induk (loadFormData)
+           e.stopPropagation();
            
            if(confirm(`Yakin ingin menghapus riwayat "${item.name}"?`)) {
               removeHistoryItem(item.id);
@@ -591,7 +552,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 3. Fungsi Restore Data ke Form
   function loadFormData(data) {
     const setVal = (id, val) => {
       const el = document.getElementById(id);
@@ -620,9 +580,9 @@ document.addEventListener("DOMContentLoaded", () => {
     setRadio("thirdParty", data.thirdParty);
     setRadio("purposeSpecified", data.purposeSpecified);
 
-    // Reset checkboxes dulu
+
     document.querySelectorAll(`input[name="legalDataCategory"]`).forEach(cb => cb.checked = false);
-    // Centang yang sesuai
+
     if (data.dataCategories) {
         data.dataCategories.forEach(val => {
             const cb = document.querySelector(`input[name="legalDataCategory"][value="${val}"]`);
@@ -631,7 +591,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 4. Event Listeners Panel
+
   if (btnHistory) {
     btnHistory.addEventListener("click", () => {
       renderHistory();
