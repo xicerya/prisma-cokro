@@ -2,39 +2,43 @@
 // Mesin klasifikasi legalitas layanan & jenis data
 // Menggunakan registry contoh: OJK, Komdigi PSE, AFPI, dan standar biometrik internasional.
 
+// [PENJELASAN 1] DEFINISI REGULATOR
+// Objek ini mendefinisikan siapa saja "wasit" atau otoritas yang diakui sistem.
+// Kunci utama: 'authorityType: government' akan memicu fitur Override Risiko (skor otomatis jadi Low/Hijau).
 const LEGAL_REGISTRIES = {
   OJK: {
     code: "OJK",
     label: "Otoritas Jasa Keuangan",
-    authorityType: "government",
-    description: "Lembaga negara yang mengatur dan mengawasi sektor jasa keuangan."
+    authorityType: "government", // Pemicu Skor Hijau (Low)
+    description: "Regulator resmi sektor jasa keuangan di Indonesia."
   },
   PSE: {
     code: "PSE",
     label: "Komdigi PSE",
-    authorityType: "government",
-    description: "Penyelenggara Sistem Elektronik yang terdaftar resmi di pemerintah."
+    authorityType: "government", // Pemicu Skor Hijau (Low)
+    description: "Penyelenggara Sistem Elektronik (PSE) yang terdaftar di Komdigi."
   },
   AFPI: {
     code: "AFPI",
     label: "AFPI",
-    authorityType: "association",
-    description: "Fintech Lending yang berizin dan diawasi oleh OJK."
+    authorityType: "association", // Asosiasi Fintech (Mitra OJK)
+    description: "Asosiasi Fintech Pendanaan Bersama Indonesia."
   },
   INT_BIOMETRIC: {
     code: "INT_BIOMETRIC",
     label: "International Biometric Registry",
-    authorityType: "international_standard",
-    description: "Vendor keamanan identitas yang memegang sertifikasi ISO/NIST."
+    authorityType: "international_standard", // Standar Teknis Internasional
+    description: "Contoh penyedia/standar biometrik yang diakui secara internasional."
   }
 };
 
-// [BAGIAN DATA TIDAK DIUBAH - SESUAI REQUEST]
-// ... (DATA REGISTRY_OJK_BANKS, EWALLETS, PSE, AFPI, BIOMETRIC TETAP SAMA SEPERTI YANG KAMU KIRIM) ...
+// ============================================================================
+// [PENJELASAN 2] DATABASE WHITELIST (DAFTAR PUTIH)
+// Daftar ini berisi nama-nama aplikasi/layanan yang dianggap RESMI & LEGAL.
+// Jika nama yang diinput user ada di sini, sistem akan menandainya sebagai 'Legal'.
+// ============================================================================
 
-// ============================================================================
 // 2.1. Bank yang diawasi OJK & Aplikasi Mobile Banking Resmi (Lengkap)
-// ============================================================================
 const REGISTRY_OJK_BANKS = [
   "BANK MANDIRI", "LIVIN BY MANDIRI", "LIVIN", "LIVIN MANDIRI", "KOPRA",
   "BANK RAKYAT INDONESIA", "BANK BRI", "BRIMO", "BRI MOBILE", "CERIA BRI",
@@ -377,7 +381,9 @@ const REGISTRY_INTL_BIOMETRIC = [
 ];
 
 //// 3. Util pencarian nama
-
+// [PENJELASAN 3] FUNGSI NORMALISASI
+// Agar pencarian tidak case-sensitive (huruf besar/kecil tidak masalah).
+// Contoh: User ketik "bca", sistem tetap bisa mencocokkan dengan "BCA" di database.
 function legalNormalizeName(name) {
   return (name || "").toString().trim().toUpperCase();
 }
@@ -388,7 +394,10 @@ function legalSearchInList(list, targetName) {
   return list.some((item) => legalNormalizeName(item).includes(t));
 }
 
-//// 4. Fungsi cek registry spesifik (sinkron)
+//// 4. Fungsi cek registry spesifik
+// [PENJELASAN 4] FUNGSI PENGECEKAN INDIVIDUAL
+// Fungsi-fungsi ini bertugas mengecek ke satu database spesifik saja.
+// Misal: legalCheckOjk hanya mengecek ke list Bank OJK.
 
 function legalCheckOjk(serviceName) {
   const found = legalSearchInList(REGISTRY_OJK_BANKS_AND_EWALLETS, serviceName);
@@ -427,8 +436,9 @@ function legalCheckIntlBiometric(serviceName) {
 }
 
 //// 5. Dispatcher: cek berdasarkan jenis platform
-// [PERBAIKAN] MENAMBAHKAN LOGIKA UNTUK KATEGORI BARU
-
+// [PENJELASAN 5] DISPATCHER (PENGENDALI LOGIKA)
+// Fungsi ini yang menentukan "Kategori apa dicek kemana?".
+// Contoh: Jika user pilih 'Game', sistem diarahkan cek ke database PSE.
 function legalCheckByPlatform(platformType, serviceNameOrDomain) {
   const pt = (platformType || "").toLowerCase();
   let raw = null;
@@ -442,7 +452,8 @@ function legalCheckByPlatform(platformType, serviceNameOrDomain) {
   else if (pt === "biometric" || pt === "biometrik") {
     raw = legalCheckIntlBiometric(serviceNameOrDomain);
   } 
-  // [PERBAIKAN] Menangkap semua kategori digital ke PSE
+  // [PENJELASAN] Bagian ini menggabungkan semua kategori digital (Game, Travel, dll)
+  // agar diperiksa di database PSE Komdigi.
   else if (
     pt === "ecommerce" || pt === "e-commerce" ||
     pt === "travel" || 
@@ -454,6 +465,7 @@ function legalCheckByPlatform(platformType, serviceNameOrDomain) {
     raw = legalCheckPse(serviceNameOrDomain);
   } 
   else {
+    // Jika kategori 'Lainnya', tidak ada pengecekan legalitas spesifik.
     return {
       platformType: pt,
       serviceName: serviceNameOrDomain,
@@ -491,6 +503,9 @@ function legalCheckByPlatform(platformType, serviceNameOrDomain) {
 }
 
 //// 6. Rule-based legalitas jenis data
+// [PENJELASAN 6] VALIDASI KONTEKS (CONTEXTUAL CHECK)
+// Memeriksa kewajaran permintaan data.
+// Contoh: Wajar jika Bank minta KTP, tapi Tidak Wajar jika Game minta KTP.
 
 function legalNormalizeCategory(cat) {
   return (cat || "").toString().trim().toLowerCase();
@@ -510,42 +525,56 @@ function legalEvaluateDataRule(platformType, dataCategories) {
   let explanation =
     "Tidak ada aturan khusus yang terpenuhi. Evaluasi lebih detail diperlukan.";
 
-  if (pt === "bank" && legalContainsAny(cats, ["ktp", "sim", "selfie"])) {
+  // 1. BANK / FINTECH (Keuangan)
+  if ((pt === "bank" || pt === "fintech") && legalContainsAny(cats, ["ktp", "sim", "selfie", "rekening"])) {
     legal = true;
     baseRisk = "Low";
     explanation =
-      "Bank / lembaga keuangan berizin diperbolehkan secara hukum meminta KTP/SIM/Selfie untuk keperluan verifikasi identitas (KYC).";
+      "Wajar bagi Lembaga Keuangan (Bank/Fintech) meminta KYC (KTP/Selfie) sesuai regulasi OJK.";
   }
 
+  // 2. WEBSITE BIASA (Tidak boleh minta KTP)
   if (
-    (pt === "website" || pt === "web" || pt === "generic_web") &&
-    legalContainsAny(cats, ["ktp", "sim"])
+    (pt === "website" || pt === "web" || pt === "generic_web" || pt === "lainnya") &&
+    legalContainsAny(cats, ["ktp", "sim", "selfie"])
   ) {
     legal = false;
     baseRisk = "High";
     explanation =
-      "Website biasa yang bukan lembaga resmi tidak memiliki dasar hukum kuat untuk meminta KTP/SIM.";
+      "Website umum yang bukan lembaga resmi tidak memiliki dasar hukum kuat untuk meminta KTP/SIM.";
   }
 
+  // 3. E-COMMERCE / TRAVEL (Butuh Alamat & Lokasi)
   if (
-    (pt === "ecommerce" || pt === "e-commerce") &&
-    legalContainsAny(cats, ["nama"]) &&
-    legalContainsAny(cats, ["alamat"])
+    (pt === "ecommerce" || pt === "e-commerce" || pt === "travel") &&
+    (legalContainsAny(cats, ["alamat"]) || legalContainsAny(cats, ["lokasi"]))
   ) {
     legal = true;
-    baseRisk = "Medium";
+    baseRisk = "Medium"; // Medium karena data lokasi tetap sensitif, tapi legal diminta.
     explanation =
-      "Platform e-commerce lazim dan legal meminta nama dan alamat untuk kebutuhan pengiriman barang.";
+      "Platform E-commerce/Travel secara sah membutuhkan Alamat/Lokasi untuk pengiriman barang atau penjemputan.";
   }
 
+  // 4. GAME / HIBURAN (Tidak boleh minta Biometrik/KTP)
   if (
-    (pt === "game" || pt === "gaming" || pt === "game_platform") &&
-    legalContainsAny(cats, ["wajah", "suara", "voice", "face"])
+    (pt === "game" || pt === "gaming" || pt === "entertainment") &&
+    legalContainsAny(cats, ["wajah", "suara", "ktp", "sim"])
   ) {
     legal = false;
     baseRisk = "High";
     explanation =
-      "Game platform yang mengumpulkan wajah/suara menyentuh data biometrik sensitif dan membutuhkan dasar hukum serta proteksi tambahan.";
+      "Platform Game/Hiburan umumnya tidak memerlukan data biometrik atau identitas resmi (KTP). Permintaan ini mencurigakan.";
+  }
+
+  // 5. PENDIDIKAN / KESEHATAN (Butuh Identitas Terbatas)
+  if (
+    (pt === "education_health" || pt === "productivity") &&
+    legalContainsAny(cats, ["nama", "email", "telepon"])
+  ) {
+    legal = true;
+    baseRisk = "Low";
+    explanation =
+      "Aplikasi Pendidikan/Produktivitas wajar meminta Nama/Email untuk pendaftaran akun pengguna.";
   }
 
   return {
@@ -558,6 +587,10 @@ function legalEvaluateDataRule(platformType, dataCategories) {
 }
 
 //// 7. Kombinasi dengan hasil Likelihood–Impact Matrix
+// [PENJELASAN 7] LOGIKA OVERRIDE (PENGGANTIAN SKOR)
+// Ini adalah inti kecerdasan sistem:
+// 1. Jika Terdaftar Pemerintah (OJK/PSE) -> Paksa Skor Jadi Low (Hijau).
+// 2. Jika Tidak Terdaftar & Minta Data Aneh -> Penalti (Naikkan Risiko).
 
 function legalRiskToScore(level) {
   const v = (level || "").toLowerCase();
@@ -587,7 +620,8 @@ function legalCombineRisk(matrixRiskLevel, legalStatus, dataRule) {
   let baseScore = Math.max(matrixScore, dataScore);
   let baseLevel = legalScoreToRisk(baseScore);
 
-  // 1. LEGAL + PEMERINTAH (OJK / Komdigi PSE) -> Override Low
+  // [OVERRIDE 1] LEGAL + PEMERINTAH -> PASTI HIJAU (AMAN)
+  // Logika ini otomatis menangkap Game/Travel resmi karena mereka masuk "PSE" (Government)
   if (legalStatus && legalStatus.isLegal && legalStatus.isGovernmentApproved) {
     return {
       finalRiskLevel: "Low",
@@ -598,7 +632,7 @@ function legalCombineRisk(matrixRiskLevel, legalStatus, dataRule) {
     };
   }
 
-  // 2. Legal Non-Pemerintah
+  // [OVERRIDE 2] LEGAL NON-PEMERINTAH -> IKUTI HITUNGAN TEKNIS
   if (legalStatus && legalStatus.isLegal && !legalStatus.isGovernmentApproved) {
     return {
       finalRiskLevel: baseLevel,
@@ -609,7 +643,8 @@ function legalCombineRisk(matrixRiskLevel, legalStatus, dataRule) {
     };
   }
 
-  // 3. Tidak legal + Data High
+  // [OVERRIDE 3] TIDAK LEGAL + DATA SENSITIF -> PENALTI (RISIKO NAIK)
+  // Logika ini otomatis menghukum Game/Travel bodong yang minta data aneh
   if (
     legalStatus &&
     !legalStatus.isLegal &&
@@ -628,6 +663,8 @@ function legalCombineRisk(matrixRiskLevel, legalStatus, dataRule) {
 }
 
 //// 8. Fungsi utama
+// [PENJELASAN 8] MAIN ENTRY POINT
+// Fungsi ini yang dipanggil oleh file lain (riskEngine.js) untuk memulai proses pengecekan legalitas.
 
 function legalEvaluateContext({ platformType, serviceName, dataCategories, matrixRiskLevel }) {
   const legalStatus = legalCheckByPlatform(platformType, serviceName);
@@ -645,6 +682,7 @@ function legalEvaluateContext({ platformType, serviceName, dataCategories, matri
   };
 }
 
+// Mengekspos fungsi ke window agar bisa diakses global oleh file lain.
 window.LegalEngine = {
   checkOjkBank: legalCheckOjk,
   checkKominfoPse: legalCheckPse,

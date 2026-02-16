@@ -2,12 +2,16 @@
 // Mesin analisis risiko yang memakai rules.js + integrasi LegalEngine (legalCheck.js)
 
 const RiskEngine = (() => {
+  // [PENJELASAN] Helper Sederhana untuk konversi skor angka ke level teks.
   function categorizeRisk(score) {
     if (score <= 6) return "Rendah";
     if (score <= 15) return "Sedang";
     return "Tinggi";
   }
 
+  // [PENJELASAN] Helper: Jika user tidak mencentang data spesifik (checkbox),
+  // sistem akan menebak kategori data berdasarkan jenis data utama (dropdown).
+  // Contoh: Pilih "Identitas" -> Otomatis dianggap "KTP" & "SIM".
   function deriveDataCategoriesFromDataType(dataType) {
     const t = (dataType || "").toLowerCase();
     if (t === "identitas") {
@@ -22,8 +26,15 @@ const RiskEngine = (() => {
     return [];
   }
 
+  // =========================================================
+  // FUNGSI UTAMA: ANALYZE
+  // =========================================================
+  // Menerima input user (params), mengembalikan hasil analisis lengkap.
   function analyze(params) {
-    // 1. Likelihood & Impact awal dari rules.js
+    
+    // [PENJELASAN] TAHAP 1: PERHITUNGAN DASAR (RAW SCORE)
+    // Menggunakan logika di 'rules.js' untuk menghitung Likelihood & Impact awal
+    // berdasarkan parameter teknis (enkripsi, akses, jenis data, dll).
     let autoInfoRaw = {};
     if (typeof RiskRules !== "undefined" && RiskRules.inferBaseLikelihoodImpact) {
       autoInfoRaw = RiskRules.inferBaseLikelihoodImpact(params) || {};
@@ -42,7 +53,11 @@ const RiskEngine = (() => {
     const baseRiskScore = baseLikelihood * baseImpact;
     const baseRiskLevel = categorizeRisk(baseRiskScore); // Rendah / Sedang / Tinggi
 
-    // 2. Evaluasi kepatuhan UU PDP & NIST
+    // [PENJELASAN] TAHAP 2: EVALUASI KEPATUHAN (COMPLIANCE)
+    // Memanggil fungsi-fungsi di 'rules.js' untuk menghasilkan tabel:
+    // 1. Kepatuhan UU PDP (Pasal per Pasal)
+    // 2. Pemetaan NIST CSF (Govern, Protect, dll)
+    // 3. Rekomendasi tindakan
     let pdpResults = [];
     let nistResults = [];
     let recommendations = [];
@@ -66,7 +81,9 @@ const RiskEngine = (() => {
       }
     }
 
-    // 3. Integrasi dengan LegalEngine
+    // [PENJELASAN] TAHAP 3: INTEGRASI LEGALITAS (LEGAL CHECK)
+    // Memanggil 'legalCheck.js' untuk memverifikasi apakah layanan tersebut
+    // terdaftar di OJK, Komdigi, atau AFPI.
     let legalContext = null;
     let finalRiskLevel = baseRiskLevel;
     let legalOverride = null;
@@ -79,11 +96,13 @@ const RiskEngine = (() => {
       const platformType = params.platformType || "lainnya";
       const serviceName = params.serviceName || "";
 
+      // Menyiapkan data kategori untuk dicek legalitasnya
       const dataCategories =
         Array.isArray(params.dataCategories) && params.dataCategories.length > 0
           ? params.dataCategories
           : deriveDataCategoriesFromDataType(params.dataType);
 
+      // Konversi level risiko matriks ke format yang dimengerti LegalEngine
       const matrixRiskLevel =
         baseRiskLevel === "Tinggi"
           ? "High"
@@ -91,6 +110,7 @@ const RiskEngine = (() => {
           ? "Medium"
           : "Low";
 
+      // Eksekusi pengecekan legalitas
       legalContext = window.LegalEngine.evaluateLegalContext({
         platformType,
         serviceName,
@@ -98,6 +118,7 @@ const RiskEngine = (() => {
         matrixRiskLevel
       });
 
+      // Update level risiko jika ada penyesuaian dari sisi hukum
       if (
         legalContext &&
         legalContext.finalRisk &&
@@ -110,11 +131,11 @@ const RiskEngine = (() => {
       }
     }
 
-    // 4. APPLY OVERRIDE 1×1 UNTUK LEGAL + PEMERINTAH
-    // ------------------------------------------------
-    // Kalau layanan LEGAL & diakui lembaga pemerintah (OJK / Komdigi PSE),
-    // termasuk e-wallet yang masuk registry tersebut, kita anggap residual risk:
-    // Likelihood = 1, Impact = 1 → kotak hijau 1×1 di matrix.
+    // [PENJELASAN] TAHAP 4: MECHANISM OVERRIDE (FITUR KUNCI SKRIPSI)
+    // ----------------------------------------------------------------
+    // Jika layanan terbukti LEGAL dan DIAWASI PEMERINTAH (OJK/Komdigi),
+    // sistem memaksa skor risiko turun menjadi 1x1 (Low).
+    // Logika: "Pengawasan ketat regulator dianggap sebagai kontrol mitigasi tertinggi."
     let effectiveLikelihood = baseLikelihood;
     let effectiveImpact = baseImpact;
 
@@ -129,11 +150,13 @@ const RiskEngine = (() => {
 
     const effectiveRiskScore = effectiveLikelihood * effectiveImpact;
 
+    // [PENJELASAN] RETURN RESULT
+    // Mengembalikan objek raksasa berisi semua hasil analisis untuk ditampilkan di UI.
     return {
       likelihood: effectiveLikelihood,
       impact: effectiveImpact,
       riskScore: effectiveRiskScore,
-      riskLevel: finalRiskLevel, // sudah mempertimbangkan legalitas
+      riskLevel: finalRiskLevel, // Status akhir (setelah override legalitas)
       autoInfo,
       pdpResults,
       nistResults,

@@ -8,18 +8,26 @@ const RiskRules = (() => {
    * Nilai awal = 3, lalu dinaikkan / diturunkan berdasarkan parameter teknis.
    */
   function inferBaseLikelihoodImpact(params) {
+    // [PENJELASAN] BASELINE SCORE
+    // Kita mulai dari angka 3 (Sedang) sebagai nilai tengah.
+    // Nanti angka ini akan ditambah (Penalti) atau dikurang (Mitigasi).
     let L = 3;
     let I = 3;
     const reasons = [];
 
-    // 1. Sensitivitas jenis data
+    // [PENJELASAN] 1. FAKTOR DATA (DATA SENSITIVITY)
+    // Menentukan seberapa parah dampak (Impact) jika data ini bocor.
     switch (params.dataType) {
       case "biometrik":
       case "keuangan":
+        // Biometrik (Wajah/Sidik Jari) bersifat permanen & tidak bisa diganti.
+        // Keuangan berdampak langsung pada kerugian materiil.
+        // Maka Impact dinaikkan drastis (+2).
         I += 2;
         reasons.push("Data sensitif (biometrik/keuangan) membuat dampak lebih besar.");
         break;
       case "identitas":
+        // KTP/NIK bisa dipakai untuk penipuan identitas (Identity Theft).
         I += 1;
         reasons.push("Data identitas resmi menambah dampak jika bocor.");
         break;
@@ -34,8 +42,10 @@ const RiskRules = (() => {
         reasons.push("Jenis data tidak spesifik, diasumsikan berdampak sedang.");
     }
 
-    // 2. Aktivitas pemrosesan
+    // [PENJELASAN] 2. FAKTOR AKTIVITAS (PROCESSING CONTEXT)
+    // Apa yang dilakukan terhadap data tersebut memengaruhi probabilitas (Likelihood) kebocoran.
     if (params.processingActivity === "sharing") {
+      // Sharing = Data keluar dari sistem kita -> Kontrol berkurang -> Risiko naik di kedua sisi.
       L += 1;
       I += 1;
       reasons.push("Data dibagikan ke pihak lain, peluang dan dampak risiko meningkat.");
@@ -49,15 +59,18 @@ const RiskRules = (() => {
       L += 1;
       reasons.push("Analisis/pemantauan meningkatkan risiko profilisasi jika tidak dijaga.");
     } else if (params.processingActivity === "transmission") {
+      // Data bergerak di jaringan lebih rentan disadap (Man-in-the-Middle).
       L += 1;
       reasons.push("Pengiriman data tanpa kontrol kuat meningkatkan kemungkinan kebocoran.");
     } else if (params.processingActivity === "deletion") {
+      // Penghapusan adalah aktivitas pengurangan risiko (Data Minimization).
       I -= 1;
       reasons.push("Fokus pada penghapusan dapat menurunkan dampak residu data.");
     }
 
-    // 3. Keterlibatan pihak ketiga
+    // [PENJELASAN] 3. FAKTOR PIHAK KETIGA (SUPPLY CHAIN RISK)
     if (params.thirdParty === "yes") {
+      // Melibatkan vendor/mitra menambah 'Surface Area' serangan.
       L += 1;
       I += 1;
       reasons.push(
@@ -65,44 +78,51 @@ const RiskRules = (() => {
       );
     }
 
-    // 4. Enkripsi
+    // [PENJELASAN] 4. FAKTOR ENKRIPSI (CRYPTOGRAPHY)
+    // Salah satu kontrol teknis terpenting dalam keamanan data.
     if (params.encryption === "none") {
+      // Plain text = Sangat berbahaya.
       L += 1;
       I += 1;
       reasons.push("Tidak ada enkripsi membuat data lebih mudah disalahgunakan.");
     } else if (params.encryption === "in_transit" || params.encryption === "at_rest") {
       reasons.push("Enkripsi hanya sebagian, perlindungan sudah ada tapi masih bisa ditingkatkan.");
     } else if (params.encryption === "both") {
+      // Enkripsi End-to-End + Storage Encryption = Mitigasi Kuat (-1).
       L -= 1;
       I -= 1;
       reasons.push("Enkripsi saat dikirim dan disimpan menurunkan kemungkinan dan dampak.");
     }
 
-    // 5. Kontrol akses
+    // [PENJELASAN] 5. FAKTOR KONTROL AKSES (ACCESS CONTROL)
     if (params.accessControl === "none") {
       L += 1;
       reasons.push("Tidak ada kontrol akses formal, siapa saja bisa mengakses data.");
     } else if (params.accessControl === "basic") {
       reasons.push("Hanya memakai username/password, masih berisiko jika lemah.");
     } else if (params.accessControl === "role_based") {
+      // RBAC / Least Privilege membatasi pergerakan penyerang jika akun jebol.
       L -= 1;
       reasons.push("Akses dibatasi berdasarkan peran, mengurangi risiko akses tidak sah.");
     }
 
-    // 6. Metode autentikasi
+    // [PENJELASAN] 6. FAKTOR AUTENTIKASI (IDENTITY ASSURANCE)
     if (params.authMethod === "none") {
       L += 1;
       reasons.push("Tanpa autentikasi yang jelas, data lebih mudah diakses pihak yang tidak berhak.");
     } else if (params.authMethod === "password_only") {
       reasons.push("Password saja cukup, tapi rawan jika tidak dikelola dengan baik.");
     } else if (params.authMethod === "password_mfa") {
+      // MFA (Multi-Factor Auth) mempersulit peretas meskipun password bocor.
       L -= 1;
       reasons.push("Autentikasi multi-faktor menambah lapisan keamanan.");
     } else if (params.authMethod === "sso") {
       reasons.push("Login lewat SSO bisa aman jika penyedia SSO terpercaya.");
     }
 
-    // Clamp ke rentang 1–5
+    // [PENJELASAN] CLAMPING SCORE
+    // Menjaga agar nilai matematika tidak keluar dari batas matriks 5x5.
+    // Tidak boleh < 1 (Minimal) dan tidak boleh > 5 (Maksimal).
     L = Math.max(1, Math.min(5, L));
     I = Math.max(1, Math.min(5, I));
 
@@ -125,7 +145,8 @@ const RiskRules = (() => {
 function evaluatePDP(params) {
   const results = [];
 
-  // 1. Tujuan pemrosesan (Purpose Limitation – Pasal 16 ayat (2) huruf b, Pasal 28)
+  // [PENJELASAN] Aspek 1: TRANSPARANSI & TUJUAN
+  // Mengacu pada Pasal 28 UU PDP: Pengendali wajib memberitahukan tujuan pemrosesan.
   if (params.purposeSpecified === "yes" && params.processingPurpose) {
     results.push({
       aspect: "Tujuan Pemrosesan",
@@ -153,7 +174,8 @@ function evaluatePDP(params) {
     });
   }
 
-  // 2. Persetujuan (Consent) – Pasal 20, 22, 23, 24
+  // [PENJELASAN] Aspek 2: PERSETUJUAN (CONSENT)
+  // Mengacu pada Pasal 20 & 22: Persetujuan harus eksplisit, bukan implisit/tersembunyi.
   if (params.consentType === "explicit") {
     results.push({
       aspect: "Persetujuan (Consent)",
@@ -164,6 +186,7 @@ function evaluatePDP(params) {
         "Pengguna memberikan persetujuan yang jelas dan spesifik sebelum data diproses.",
     });
   } else if (params.consentType === "implicit") {
+    // Implicit Consent (Clickwrap) berada di area abu-abu, apalagi untuk data sensitif.
     let status = "Sebagian Patuh";
     let code = "ok";
     let note =
@@ -194,7 +217,8 @@ function evaluatePDP(params) {
     });
   }
 
-  // 3. Keamanan pemrosesan data – Pasal 35–39
+  // [PENJELASAN] Aspek 3: KEAMANAN TEKNIS
+  // Mengacu pada Pasal 35: Kewajiban melindungi data dari akses tidak sah.
   let securityStatus = "Sebagian Patuh";
   let securityCode = "ok";
   let securityNote =
@@ -226,7 +250,8 @@ function evaluatePDP(params) {
     note: securityNote,
   });
 
-  // 4. Pemrosesan oleh pihak ketiga – Pasal 17 ayat (2), Pasal 52
+  // [PENJELASAN] Aspek 4: TRANSFER PIHAK KETIGA
+  // Mengacu pada Pasal 17 & 52: Kewajiban Pengendali saat menunjuk Prosesor Data.
   if (params.thirdParty === "yes") {
     results.push({
       aspect: "Pemrosesan oleh Pihak Ketiga",
@@ -247,7 +272,8 @@ function evaluatePDP(params) {
     });
   }
 
-  // 5. Respons insiden & pemberitahuan – Pasal 46 ayat (1)-(2)
+  // [PENJELASAN] Aspek 5: RESPONS INSIDEN (NOTIFIKASI)
+  // Mengacu pada Pasal 46: Kewajiban lapor 3x24 jam jika terjadi kegagalan perlindungan data.
   if (params.incidentResponsePlan === "tested_regularly") {
     results.push({
       aspect: "Respons Insiden",
@@ -287,7 +313,8 @@ function evaluatePDP(params) {
   function evaluateNIST(params) {
     const results = [];
 
-    // GOVERN (GV) – Kebijakan & tata kelola privasi
+    // [PENJELASAN] NIST FUNCTION 1: GOVERN (GV)
+    // Fokus pada tata kelola, kebijakan, dan strategi privasi organisasi.
     let governLevel = "Lemah";
     let governNote =
       "Belum ada kebijakan privasi yang jelas dan konsisten diterapkan.";
@@ -309,7 +336,8 @@ function evaluatePDP(params) {
       note: governNote,
     });
 
-    // IDENTIFY (ID) – Pengenalan aset & data (disederhanakan)
+    // [PENJELASAN] NIST FUNCTION 2: IDENTIFY (ID)
+    // Fokus pada pemahaman aset data dan risikonya.
     results.push({
       function: "ID (Identify)",
       level: "Sedang",
@@ -317,7 +345,8 @@ function evaluatePDP(params) {
         "Jenis data yang diproses sudah diidentifikasi melalui parameter input, namun pemetaan aset lebih rinci belum dimodelkan di sini.",
     });
 
-    // PROTECT (PR) – Perlindungan (enkripsi, akses, autentikasi)
+    // [PENJELASAN] NIST FUNCTION 3: PROTECT (PR)
+    // Fokus pada kontrol teknis untuk melindungi data (Enkripsi, Akses, Auth).
     let protectLevel = "Sedang";
     let protectNote =
       "Sebagian kontrol perlindungan sudah ada, tetapi masih bisa ditingkatkan.";
@@ -345,7 +374,8 @@ function evaluatePDP(params) {
       note: protectNote,
     });
 
-    // DETECT (DE) – Deteksi insiden
+    // [PENJELASAN] NIST FUNCTION 4: DETECT (DE)
+    // Fokus pada kemampuan mendeteksi serangan atau anomali saat sedang terjadi.
     let detectLevel = "Lemah";
     let detectNote =
       "Belum ada mekanisme yang jelas untuk mendeteksi insiden atau aktivitas mencurigakan.";
@@ -366,7 +396,8 @@ function evaluatePDP(params) {
       note: detectNote,
     });
 
-    // RESPOND (RS) – Tanggapan insiden
+    // [PENJELASAN] NIST FUNCTION 5: RESPOND (RS)
+    // Fokus pada tindakan reaksi yang diambil SETELAH insiden terdeteksi.
     let respondLevel = "Lemah";
     let respondNote =
       "Belum ada prosedur jelas untuk merespons insiden keamanan atau kebocoran data.";
@@ -387,7 +418,8 @@ function evaluatePDP(params) {
       note: respondNote,
     });
 
-    // RECOVER (RC) – Pemulihan setelah insiden
+    // [PENJELASAN] NIST FUNCTION 6: RECOVER (RC)
+    // Fokus pada pemulihan sistem dan data (Backup/Restore) agar operasional kembali normal.
     let recoverLevel = "Sedang";
     let recoverNote =
       "Kemampuan pemulihan dianggap sedang; perlu dipastikan bahwa backup benar-benar dapat digunakan.";
@@ -418,7 +450,8 @@ function evaluatePDP(params) {
     const { params, riskLevel, pdpResults, nistResults } = context;
     const recs = [];
 
-    // 1. Berdasarkan level risiko
+    // [PENJELASAN] REKOMENDASI BERBASIS LEVEL RISIKO
+    // Memberikan prioritas tindakan berdasarkan urgensi skor.
     if (riskLevel === "Tinggi") {
       recs.push(
         "Prioritaskan skenario ini sebagai risiko tinggi dan lakukan tindakan mitigasi dalam waktu dekat."
@@ -433,7 +466,7 @@ function evaluatePDP(params) {
       );
     }
 
-    // 2. Enkripsi & akses
+    // [PENJELASAN] REKOMENDASI TEKNIS (Hardening)
     if (params.encryption === "none") {
       recs.push(
         "Pertimbangkan untuk menerapkan enkripsi saat data disimpan (at rest) dan saat dikirim (in transit)."
@@ -445,14 +478,13 @@ function evaluatePDP(params) {
       );
     }
 
-    // 3. Autentikasi
     if (params.authMethod === "none" || params.authMethod === "password_only") {
       recs.push(
         "Pertimbangkan penggunaan autentikasi multi-faktor (MFA) agar akun pengguna dan data lebih sulit dibobol."
       );
     }
 
-    // 4. Consent & data sensitif
+    // [PENJELASAN] REKOMENDASI LEGAL
     if (
       (params.dataType === "biometrik" || params.dataType === "keuangan") &&
       params.consentType !== "explicit"
@@ -462,14 +494,13 @@ function evaluatePDP(params) {
       );
     }
 
-    // 5. Pihak ketiga
     if (params.thirdParty === "yes") {
       recs.push(
         "Pastikan ada perjanjian tertulis dengan pihak ketiga yang mengatur perlindungan data pribadi dan tanggung jawab jika terjadi insiden."
       );
     }
 
-    // 6. Respons insiden (lihat hasil PDP & NIST)
+    // [PENJELASAN] REKOMENDASI TATA KELOLA (NIST)
     const incidentAspect = pdpResults.find(
       (r) => r.aspect === "Respons Insiden"
     );

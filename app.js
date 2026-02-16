@@ -2,6 +2,8 @@
 // Interaksi UI untuk Dashboard Analisis Risiko Privasi
 
 document.addEventListener("DOMContentLoaded", () => {
+  // [PENJELASAN] 1. INISIALISASI VARIABEL DOM
+  // Mengambil referensi elemen HTML agar bisa dikontrol lewat JavaScript.
   const form = document.getElementById("risk-form");
   const resetBtn = document.getElementById("reset-btn");
   const summaryContent = document.getElementById("summary-content");
@@ -10,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const nistContainer = document.getElementById("nist-results");
   const recContainer = document.getElementById("recommendations");
 
+  // [PENJELASAN] Membangun visualisasi matriks kosong saat halaman pertama kali dimuat.
   buildEmptyMatrix();
 
   if (!form) {
@@ -17,6 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  // [PENJELASAN] 2. LOGIKA FILTER DINAMIS (DEPENDENT DROPDOWN)
+  // Fitur ini mengubah isi dropdown "Nama Layanan" berdasarkan "Jenis Platform" yang dipilih.
   const platformSelect = document.getElementById("platformType");
   const serviceSelect = document.getElementById("serviceName");
 
@@ -26,14 +31,17 @@ document.addEventListener("DOMContentLoaded", () => {
     function filterServiceOptions() {
       const platform = (platformSelect.value || "").toLowerCase();
 
+      // Reset: Tampilkan semua dulu, nanti yang tidak cocok akan di-hide
       optgroups.forEach((g) => { g.hidden = false; });
 
+      // Jika belum pilih platform atau pilih "Lainnya", tampilkan semua.
       if (!platform || platform === "lainnya") return;
 
       optgroups.forEach((g) => {
         const label = (g.label || "").toLowerCase();
         let match = false;
 
+        // Logika pencocokan antara Value Platform dengan Label Optgroup
         if (platform === "bank" && label.includes("bank (ojk)")) {
             match = true;
         } 
@@ -43,6 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
         else if ((platform === "biometric" || platform === "biometrik") && label.includes("biometrik")) {
             match = true;
         }
+        // [PENJELASAN KHUSUS] Menggabungkan berbagai kategori digital (Game, Travel, dll)
+        // untuk menampilkan daftar layanan yang terdaftar sebagai PSE (Penyelenggara Sistem Elektronik).
         else if (
             (platform === "ecommerce" || platform === "e-commerce" ||
              platform === "travel" || 
@@ -55,31 +65,41 @@ document.addEventListener("DOMContentLoaded", () => {
             match = true;
         }
 
+        // Sembunyikan grup yang tidak cocok
         g.hidden = !match;
       });
 
+      // Reset pilihan agar user memilih ulang dari opsi yang relevan
       serviceSelect.value = "";
     }
 
     platformSelect.addEventListener("change", filterServiceOptions);
-    filterServiceOptions();
+    filterServiceOptions(); // Jalankan sekali di awal
   }
 
+  // [PENJELASAN] 3. MAIN CONTROLLER (EVENT SUBMIT)
+  // Menangani proses saat tombol "Hitung Risiko" ditekan.
   form.addEventListener("submit", (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Mencegah reload halaman
     
+    // Langkah A: Ambil data dari form
     const params = collectParams();
+    
+    // Langkah B: Panggil RiskEngine untuk melakukan perhitungan
     const result = RiskEngine.analyze(params);
 
+    // Langkah C: Tampilkan hasil ke layar (View Update)
     renderSummary(params, result);
     renderMatrix(result);
     renderPDP(result.pdpResults);
     renderNIST(result.nistResults);
     renderRecommendations(result.recommendations);
 
+    // UX: Scroll otomatis ke bagian hasil
     document.getElementById("summary-card").scrollIntoView({ behavior: "smooth" });
   });
 
+  // [PENJELASAN] Logika Tombol Reset
   resetBtn.addEventListener("click", () => {
     setTimeout(() => {
       buildEmptyMatrix();
@@ -98,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 0);
   });
 
+  // [PENJELASAN] Helper: Mengambil nilai dari semua input HTML dan menjadikannya Object JSON
   function collectParams() {
     const scenarioName = document.getElementById("scenarioName").value.trim();
 
@@ -155,9 +176,11 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
+  // [PENJELASAN] Render: Menampilkan Kartu Ringkasan Hasil
   function renderSummary(params, result) {
     summaryContent.classList.remove("placeholder");
     
+    // Format tanggal untuk timestamp
     const now = new Date();
     const options = { 
         weekday: 'long', 
@@ -182,6 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ? params.scenarioName
         : "Skenario tanpa nama";
 
+    // Blok info jika nilai otomatis dari sistem
     const autoBlock = result.autoInfo
       ? `<p style="margin-top:0.5rem;font-size:0.8rem;color:#9ca3af;">
             Nilai Likelihood &amp; Impact ditentukan otomatis berdasarkan rule engine:
@@ -189,6 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
          </p>`
       : "";
 
+    // Blok info status legalitas (Override Hijau)
     const legalBlock =
       result.legalContext && result.legalContext.legalStatus
         ? `<p style="margin-top:0.5rem;font-size:0.8rem;color:#6ee7b7;">
@@ -243,6 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
+  // [PENJELASAN] Membuat elemen HTML untuk Grid Matriks 5x5
   function buildEmptyMatrix() {
     matrixContainer.innerHTML = "";
 
@@ -264,6 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // [PENJELASAN] Memberikan efek highlight (kedip) pada sel matriks yang sesuai hasil
   function renderMatrix(result) {
     buildEmptyMatrix();
     const cells = matrixContainer.querySelectorAll(".matrix");
@@ -280,6 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // [PENJELASAN] Render Tabel Kepatuhan UU PDP
   function renderPDP(pdpResults) {
     pdpContainer.classList.remove("placeholder");
     if (!pdpResults || pdpResults.length === 0) {
@@ -319,6 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
     pdpContainer.innerHTML = html;
   }
 
+  // [PENJELASAN] Render Tabel Profil NIST CSF
   function renderNIST(nistResults) {
     nistContainer.classList.remove("placeholder");
     if (!nistResults || nistResults.length === 0) {
@@ -384,6 +413,8 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#039;");
   }
   
+  // [PENJELASAN] 4. FITUR RIWAYAT / HISTORY (LOCAL STORAGE)
+  // Menyimpan data hasil analisis ke memori browser agar tidak hilang saat di-refresh.
   const STORAGE_KEY = "prisma_cokro_history_v1";
   const btnSave = document.getElementById("btn-save");
   const btnHistory = document.getElementById("btn-history");
@@ -397,7 +428,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!rawData) return [];
     
     try {
-      const decryptedString = atob(rawData);
+      const decryptedString = atob(rawData); // Decode Base64 sederhana
       return JSON.parse(decryptedString);
     } catch (e) {
       console.error("Gagal mendekripsi data lokal:", e);
@@ -408,7 +439,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function saveStoredHistory(dataArray) {
     try {
       const jsonString = JSON.stringify(dataArray);
-      const encryptedData = btoa(jsonString);
+      const encryptedData = btoa(jsonString); // Encode Base64 sederhana
       localStorage.setItem(STORAGE_KEY, encryptedData);
       return true;
     } catch (e) {
@@ -424,6 +455,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderHistory();
   }
 
+  // [PENJELASAN] Event Listener: Tombol Simpan
   if (btnSave) {
     btnSave.addEventListener("click", () => {
       const scenarioName = document.getElementById("scenarioName").value;
@@ -459,7 +491,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const history = getStoredHistory();
       history.unshift(newEntry); 
-      if (history.length > 20) history.pop();
+      if (history.length > 20) history.pop(); // Batasi max 20 item
       saveStoredHistory(history);
       
       const originalText = btnSave.innerText;
@@ -472,6 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // [PENJELASAN] Render: Daftar Riwayat di Sidebar/Panel
   function renderHistory() {
     const history = getStoredHistory();
     historyList.innerHTML = "";
@@ -526,6 +559,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
+      // Event Listener: Klik Item -> Load Data
       el.addEventListener("click", () => {
         loadFormData(item.formData);
         historyPanel.style.display = "none";
@@ -537,13 +571,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
+      // Event Listener: Tombol Hapus per Item
       const deleteBtn = el.querySelector(".btn-delete-item");
       if (deleteBtn) {
         deleteBtn.addEventListener("click", (e) => {
-           e.stopPropagation();
+           e.stopPropagation(); // Mencegah klik tembus ke parent (load data)
            
            if(confirm(`Yakin ingin menghapus riwayat "${item.name}"?`)) {
-              removeHistoryItem(item.id);
+             removeHistoryItem(item.id);
            }
         });
       }
@@ -552,6 +587,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // [PENJELASAN] Fungsi Restore: Mengisi ulang form dari data JSON
   function loadFormData(data) {
     const setVal = (id, val) => {
       const el = document.getElementById(id);
