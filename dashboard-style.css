@@ -192,7 +192,7 @@ body {
 
 .form-section {
   grid-column: 1 / -1;
-  margin: 0 auto 1.2rem auto;
+  margin: 0.5rem auto 0 auto;
   padding: 0.9rem 1rem;
   width: 100%;
   max-width: 850px;
