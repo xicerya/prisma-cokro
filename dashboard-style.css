@@ -92,6 +92,24 @@ body {
   align-items: center;
 }
 
+/* Fix untuk Tombol Kembali di Header */
+.app-header .btn-primary {
+  text-decoration: none; /* Hilangkan garis bawah */
+  display: inline-flex;  /* Pastikan bentuknya kotak tombol */
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;   /* Mencegah teks turun ke bawah di layar sempit */
+  font-weight: 600;
+  
+  /* Ukuran khusus header agar pas di HP */
+  padding: 0.5rem 1.2rem; 
+  font-size: 0.7rem;
+  min-height: auto; /* Reset min-height tombol aksi biasa */
+  
+  /* Override warna link */
+  color: #020617 !important;
+}
+
 .app-main {
   max-width: 1120px;
   margin: 1.8rem auto 1.6rem;
@@ -191,6 +209,13 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.18em;
   color: var(--accent);
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  font-style: italic;
 }
 
 input[type="text"],
@@ -333,28 +358,78 @@ input:focus, select:focus, textarea:focus {
   text-decoration: none;
 }
 
-.action-btn.btn-primary {
+/* Primary Button (Hitung) */
+.action-btn.btn-primary, 
+.btn-primary {
   background: radial-gradient(circle at 0 50%, #22d3ee, #0ea5e9);
   color: #020617;
   border-color: rgba(56, 189, 248, 0.85);
   box-shadow: var(--shadow-neon);
 }
 
-.action-btn.btn-primary:hover {
+.action-btn.btn-primary:hover,
+.btn-primary:hover {
   transform: translateY(-1px) scale(1.01);
   box-shadow: 0 0 32px rgba(56, 189, 248, 0.8);
 }
 
-.action-btn.btn-secondary {
+/* Secondary Button (Simpan, Reset) */
+.action-btn.btn-secondary,
+.btn-secondary {
   background: rgba(15, 23, 42, 0.96);
   color: var(--text-muted);
   border-style: dashed;
 }
 
-.action-btn.btn-secondary:hover {
+.action-btn.btn-secondary:hover,
+.btn-secondary:hover {
   color: var(--accent);
   border-color: rgba(56, 189, 248, 0.8);
   background: rgba(15, 23, 42, 0.99);
+}
+
+/* ===================== */
+/* Summary & Results     */
+/* ===================== */
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.4rem;
+}
+
+@media (max-width: 768px) {
+  .summary-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.summary-item {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-strong);
+  padding: 0.6rem 0.7rem;
+  background: radial-gradient(circle at 0 0, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
+}
+
+.summary-item h3 {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+}
+
+.summary-content {
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+/* Placeholder text */
+.placeholder {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
 }
 
 /* ===================== */
@@ -407,6 +482,12 @@ input:focus, select:focus, textarea:focus {
   font-size: 0.7rem;
 }
 
+.matrix-caption {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
 .matrix-cell {
   display: flex;
   align-items: center;
@@ -414,10 +495,24 @@ input:focus, select:focus, textarea:focus {
   border-radius: 6px;
 }
 
+.matrix-cell.label { background: transparent; color: #9ca3af; border: none; }
+.matrix-cell.axis { font-weight: 500; }
+
 .matrix-cell.low { background: rgba(16, 185, 129, 0.3); }
 .matrix-cell.medium { background: rgba(245, 158, 11, 0.35); }
 .matrix-cell.high { background: rgba(239, 68, 68, 0.45); }
 .matrix-cell.active { box-shadow: 0 0 0 2px #e5e7eb; border: 1px solid #e5e7eb; }
+
+#matrix-legend {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.legend { padding: 0.1rem 0.45rem; border-radius: 999px; }
+.legend.low { background: rgba(16, 185, 129, 0.2); }
+.legend.medium { background: rgba(245, 158, 11, 0.25); }
+.legend.high { background: rgba(239, 68, 68, 0.3); }
 
 /* Badges Status */
 .badge, .status-pill {
@@ -429,9 +524,27 @@ input:focus, select:focus, textarea:focus {
   font-weight: 500;
 }
 
-.status-pill.low { color: #bbf7d0; background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.7); }
-.status-pill.medium { color: #fef08a; background: rgba(234, 179, 8, 0.18); border: 1px solid rgba(234, 179, 8, 0.8); }
-.status-pill.high { color: #fecaca; background: rgba(239, 68, 68, 0.23); border: 1px solid rgba(239, 68, 68, 0.9); }
+.badge.low { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); }
+.badge.medium { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+.badge.high { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+.status-pill { gap: 0.35rem; padding: 0.25rem 0.65rem; border: 1px solid var(--border-soft); text-transform: uppercase; letter-spacing: 0.16em; }
+.status-pill.low { color: #bbf7d0; background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.7); }
+.status-pill.medium { color: #fef08a; background: rgba(234, 179, 8, 0.18); border-color: rgba(234, 179, 8, 0.8); }
+.status-pill.high { color: #fecaca; background: rgba(239, 68, 68, 0.23); border-color: rgba(239, 68, 68, 0.9); }
+
+/* Helper classes for text color */
+.good { color: var(--good); }
+.ok { color: var(--ok); }
+.bad { color: var(--bad); }
+
+.recommendation-list {
+  list-style: disc;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+.recommendation-list li + li { margin-top: 0.25rem; }
 
 /* ===================== */
 /* History Delete Button */
@@ -446,11 +559,16 @@ input:focus, select:focus, textarea:focus {
   cursor: pointer;
   margin-left: 10px;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: fit-content;
 }
 
 .btn-delete-item:hover {
   background: var(--bad);
   color: #fff;
+  border-color: var(--bad);
   transform: scale(1.05);
 }
 
@@ -464,27 +582,4 @@ input:focus, select:focus, textarea:focus {
   font-size: 0.7rem;
   color: var(--text-muted);
   text-align: right;
-}
-
-/* Fix untuk Tombol Kembali di Header */
-.app-header .btn-primary {
-  text-decoration: none; /* Hilangkan garis bawah */
-  display: inline-flex;  /* Pastikan bentuknya kotak tombol */
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;   /* Mencegah teks turun ke bawah di layar sempit */
-  font-weight: 600;
-  
-  /* Ukuran khusus header agar pas di HP */
-  padding: 0.5rem 1.2rem; 
-  font-size: 0.7rem;
-  min-height: auto; /* Reset min-height tombol aksi biasa */
-}
-
-/* Pastikan warna link tidak menimpa warna tombol */
-a.btn-primary, 
-a.btn-primary:visited, 
-a.btn-primary:hover, 
-a.btn-primary:active {
-  color: #020617 !important; /* Paksa warna teks jadi gelap (sesuai tema tombol primary) */
 }
