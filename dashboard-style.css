@@ -663,7 +663,7 @@ input:focus, select:focus, textarea:focus {
   width: 100%;
   
   /* KUNCI 'JANGAN TERLALU PINGGIR': Batasi lebar maksimal container tombol */
-  max-width: 650px; 
+  max-width: 850px; 
   
   gap: 0.8rem;
   
